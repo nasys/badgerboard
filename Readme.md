@@ -1,57 +1,24 @@
-// BADGERBOARD EXAMPLE
+					BADGERBOARD 
 
 
- #include <badger.h>
 
-badger_scheduler temp_sched(5 * 60 * 1000UL, 30 * 1000UL, PRINT_ENABLE);
-badger_scheduler status_sched(10 * 60 * 1000UL, 60 * 1000UL, PRINT_ENABLE);
+* Download this library as .zip 
+* Open Arduino and include it under sketch -> include library -> add .zip library
+* Open files -> examples -> badger -> LoRa_temp_hum
 
-uint32_t s_badger_sleep_period_ms = 32 * 1000UL;
-uint32_t s_LoRa_tx_period_min = 30 * 1000UL;
-
-// enter your own key
-const uint8_t devEUI[8] = {
-
-};
-
-const uint8_t appEUI[8] = {
-
-};
-
-const uint8_t appKey[16] = {
-
-};
+LoRa sensor setup :
+ 
+* Go to https://developer.noranet.ee and make yourself a user
+* Go to nodes on your left sidebar and make an Application and new node
+* Name the sensor 
+* AppEUI is the same you made under Applications
+* devEUI is assigned with the device
+* AppKey must be 32 hexadecimal units long and is chosen by you
 
 
-void setup() 
-{
-badger_init();
-LoRa_tx_interval_min_set(s_LoRa_tx_period_min);
+Replace example devEUI appEUI and appKey with the ones you made in https://developer.noranet.ee. Open nodes and click on your sensor’s EUI, appKey and Application to open new window where are shown char arrays and replace the char array in your code with the one you get from https://developer.noranet.ee.  
 
-Serial.println("32U4 temp/hum sensor");
-badger_print_EUI(devEUI);
-LoRa_enable_long_range();
-LoRa_init(devEUI, appEUI, appKey);
-LoRa_enable_long_range();
-LoRa_sleep();
-}
 
-void loop()
-{
-if(temp_sched.run_now())
-{
-badger_pulse_led(1);
-badger_blink_error(badger_temp_sensor_send());
-}
-if(status_sched.run_now())
-{
-badger_pulse_led(1);
-badger_blink_error(badger_temp_sensor_send_status(0));
-}
-status_sched.print_soonest();
-if(Lora_requires_reset())
-{
-badger_restart();        
-}
-badger_sleep_now(s_badger_sleep_period_ms);
-}
+
+
+

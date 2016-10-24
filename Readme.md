@@ -1,8 +1,7 @@
-//BADGERBOARD EXAMPLE
+// BADGERBOARD EXAMPLE
 
 
-
-#include <badger.h>
+ #include <badger.h>
 
 badger_scheduler temp_sched(5 * 60 * 1000UL, 30 * 1000UL, PRINT_ENABLE);
 badger_scheduler status_sched(10 * 60 * 1000UL, 60 * 1000UL, PRINT_ENABLE);
@@ -22,6 +21,7 @@ const uint8_t appEUI[8] = {
 const uint8_t appKey[16] = {
 
 };
+
 
 void setup() 
 {

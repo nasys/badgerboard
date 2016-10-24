@@ -1,75 +1,14 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
-#include "libraries/LowPower.h"
-#include "libraries/SoftReset.h"
+#include "LowPower.h"
+#include "SoftReset.h"
 
-#include "libraries/FaBoHumidity_HTS221.h"
+#include "FaBoHumidity_HTS221.h"
 
 
 #include "badger.h"
-#include "libraries/Sodaq_RN2483.h"
-
-volatile bool sodaq_wdt_flag = false;
-
-void sodaq_wdt_enable(wdt_period period)
-{
-	
-	// From TPH_Demo/MyWatchdog.cpp
-	// Both WDE and WDIE
-	__asm__ __volatile__ (  \
-						  "in __tmp_reg__,__SREG__" "\n\t"    \
-						  "cli" "\n\t"    \
-						  "wdr" "\n\t"    \
-						  "sts %0,%1" "\n\t"  \
-						  "out __SREG__,__tmp_reg__" "\n\t"   \
-						  "sts %0,%2" "\n\t" \
-						  : /* no outputs */  \
-						  : "M" (_SFR_MEM_ADDR(_WD_CONTROL_REG)), \
-        "r" (_BV(_WD_CHANGE_BIT) | _BV(WDE)), \
-        "r" ((uint8_t) (((period & 0x08) ? _WD_PS3_MASK : 0x00) | \
-						_BV(WDE) | _BV(WDIE) | (period & 0x07)) ) \
-						  : "r0"  \
-						  );
-}
-/*
-void sodaq_wdt_disable()
-{
-	
-	// Using avr/wdt.h
-	wdt_disable();
-	
-}*/
-
-// Resets the WDT counter
-void sodaq_wdt_reset()
-{
-	
-	// Using avr/wdt.h
-	wdt_reset();
-	
-	// Should this be called once per interrupt,
-	// or are we ok calling it with every reset?
-	WDTCSR |= _BV(WDIE);	
-}
-
-void sodaq_wdt_safe_delay(uint32_t ms)
-{
-	// Delay step size
-	/*  uint32_t delay_step = 10;
-	 
-  // Loop through and reset between steps
-  while (ms > delay_step) {
-	 sodaq_wdt_reset();
-	 delay(delay_step);
-	 ms -= delay_step;
-  }
-	 
-  // Delay for the remainder
-  sodaq_wdt_reset();
-  delay(ms);*/
-	sleep_wdt_approx(ms);
-}
+#include "Sodaq_RN2483.h"
 
 static uint64_t millis_offset = 0;
 //static float s_wdt_calib = 1.0;
@@ -134,59 +73,6 @@ void sleep_wdt_approx(uint32_t sleep_time_ms)
 	sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);
 	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
 }
-/*
-void sleep_on_WDT(uint32_t sleep_time_ms)
-{
-	delay(sleep_time_ms);
-	return;
-	// guarantees no sleep after boot for usb to wake
-	if(badger_usb_powered()) // || millis() < 6000)
-	{
-		delay(sleep_time_ms);
-		return;
-	}
-	if(sleep_time_ms < 15)
-	{
-		delay(sleep_time_ms);
-		//		Serial.println("sleep < 15");
-		return;	
-	}
-	//	sleep_time_ms *= s_wdt_calib;
-	if(sleep_time_ms < 28)
-	{
-		sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
-		delay(sleep_time_ms);
-		return;
-	}
-	sleep_wdt(SLEEP_8S, 8000, &sleep_time_ms);
-	sleep_wdt(SLEEP_4S, 4000, &sleep_time_ms);
-	sleep_wdt(SLEEP_2S, 2000, &sleep_time_ms);
-	sleep_wdt(SLEEP_1S, 1000, &sleep_time_ms);
-	sleep_wdt(SLEEP_500MS, 500, &sleep_time_ms);
-	sleep_wdt(SLEEP_250MS, 250, &sleep_time_ms);  
-	sleep_wdt(SLEEP_120MS, 120, &sleep_time_ms);
-	sleep_wdt(SLEEP_60MS, 60, &sleep_time_ms);
-	sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);
-	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
-}*/
-/*
-void calib_wdt_timer()
-{
-	uint32_t before = millis();
-	LowPower.idle(SLEEP_250MS, ADC_ON, TIMER4_ON, TIMER3_ON, TIMER1_ON, TIMER0_ON, SPI_ON, USART1_ON, TWI_ON, USB_ON);
-	s_wdt_calib = 250 / (float) (millis() - before);
-	Serial.println(millis()); Serial.println(before);
-	Serial.print("WDT calib "); Serial.println(s_wdt_calib);
-}*/
-
-
-/*
- // AVR WDT ISR
- ISR(WDT_vect)
- {
- sodaq_wdt_flag = true;
- }*/
-
 // Boot message
 const uint8_t bootMSG[] =
 {
@@ -283,7 +169,7 @@ void LoRa_sleep()
 bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16])
 {
 	LoRaBee.setDiag(Serial);
-//	LoRaBee.wakeUp();	
+	
 	bool success = false;
 	int i = 0;
 	while(i++ < 5)
@@ -498,7 +384,9 @@ void badger_temp_sensor_init()
 bool badger_temp_sensor_send()
 {
 	if(s_fabo_init_successful == false)
-		return;
+	{
+		return false;
+	}
 	char json_data[60];
 	float temp = faboHumidity.getTemperature();
 	float humidity = faboHumidity.getHumidity();

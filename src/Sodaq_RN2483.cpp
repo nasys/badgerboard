@@ -35,6 +35,49 @@
 #define debugPrint(...)
 #endif */
 
+volatile bool sodaq_wdt_flag = false;
+
+void sodaq_wdt_enable(wdt_period period)
+{
+	
+	// From TPH_Demo/MyWatchdog.cpp
+	// Both WDE and WDIE
+	__asm__ __volatile__ (  \
+						  "in __tmp_reg__,__SREG__" "\n\t"    \
+						  "cli" "\n\t"    \
+						  "wdr" "\n\t"    \
+						  "sts %0,%1" "\n\t"  \
+						  "out __SREG__,__tmp_reg__" "\n\t"   \
+						  "sts %0,%2" "\n\t" \
+						  : /* no outputs */  \
+						  : "M" (_SFR_MEM_ADDR(_WD_CONTROL_REG)), \
+        "r" (_BV(_WD_CHANGE_BIT) | _BV(WDE)), \
+        "r" ((uint8_t) (((period & 0x08) ? _WD_PS3_MASK : 0x00) | \
+						_BV(WDE) | _BV(WDIE) | (period & 0x07)) ) \
+						  : "r0"  \
+						  );
+}
+
+void sodaq_wdt_reset()
+{
+	
+	
+	wdt_reset();
+	
+	// Should this be called once per interrupt,
+	// or are we ok calling it with every reset?
+	WDTCSR |= _BV(WDIE);
+	
+}
+
+/*void sodaq_wdt_safe_delay(uint32_t ms)
+{
+	// Delay step size
+	sleep_wdt_approx(ms);
+}
+*/
+
+
 // Structure for mapping error response strings and error codes.
 typedef struct StringEnumPair
 {
@@ -496,7 +539,7 @@ uint8_t Sodaq_RN2483::macTransmit(const char* type, uint8_t port, const uint8_t*
 {
 	this->wakeUpIfSleeping();
     //debugPrintLn("[macTransmit]");
-//	sleep_wdt_approx(15);
+
     this->loraStream->print(STR_CMD_MAC_TX);
     this->loraStream->print(type);
     this->loraStream->print(port);

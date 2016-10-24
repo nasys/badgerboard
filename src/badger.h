@@ -6,6 +6,7 @@
 #include <avr/wdt.h>
 #include <Arduino.h>
 
+
 #endif
 
 #define loraSerial Serial1

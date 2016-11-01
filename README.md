@@ -1,4 +1,5 @@
 #BADGERBOARD
+
  
 
 
@@ -19,6 +20,9 @@ LoRa sensor setup :
 Replace example devEUI appEUI and appKey with the ones you made in https://developer.noranet.ee. Open nodes and click on your sensor’s EUI, appKey and Application to open new window where are shown char arrays and replace the char array in your code with the one you get from https://developer.noranet.ee.  
 
 
+Version 0.0.1
+
+* initial version of Badgerboard library
 
 
 

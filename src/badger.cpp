@@ -6,7 +6,6 @@
 
 #include "FaBoHumidity_HTS221.h"
 
-
 #include "badger.h"
 #include "Sodaq_RN2483.h"
 

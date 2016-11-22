@@ -12,6 +12,10 @@ LoRa sensor setup :
 * Replace example devEUI appEUI and appKey with the ones that Your LoRaWAN™ solution provider has assigned.  
 * Upload Your code to Badgerboard
 
+Known issues:
+
+* Works only with Arduino version 1.6.10 and later
+
 Version 0.0.1
 
 * initial version of Badgerboard library

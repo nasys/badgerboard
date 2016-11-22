@@ -1,7 +1,1 @@
-# gitignore
-.DS_Store\
-info.plist\
-scm.plist\
-text-filter.idx\
-text-find.idx\
-}
+.DS_Store

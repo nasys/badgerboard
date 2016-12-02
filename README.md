@@ -5,12 +5,11 @@
 	(____/'`\__,_)`\__,_)`\__  |`\____)(_)   (_,__/'`\___/'`\__,_)(_)  `\__,_)
 						 ( )_) |
 						  \___/'
-						  
-LoRa Gateway project
+
 =====================
 
 1. Library setup
------------------
+
 	* Download this library as **_.zip _**
 	* Open Arduino and include it under **_sketch -> include library -> add .zip library_**
 	* Open **_files -> examples -> badger -> LoRa_temp_hum_**

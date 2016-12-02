@@ -135,6 +135,7 @@ void Lora_down_check(bool success)
 	}
 }
 
+
 bool Lora_requires_reset()
 {
 	return s_LoRa_down;
@@ -175,6 +176,7 @@ bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t
 	{
 		if (LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, true))
 		{
+			LoRa_enable_long_range();                            //enable long range
 			LoRaBee.sleep();
 			s_tx_last_time = badger_millis();
 			Serial.println(F("OTAA successful."));

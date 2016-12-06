@@ -135,10 +135,6 @@ float FaBoHumidity_HTS221::getTemperature() {
     t_T0_degC = _T0_degC_x8 / 8.0;
     t_T1_degC = _T1_degC_x8 / 8.0;
     // 線形補間でもとめる
-	Serial.println(t_T0_degC);
-	Serial.println(t_T1_degC);
-	Serial.println(T_OUT);
-	Serial.println(_T0_OUT);
     temperature = t_T0_degC + ( t_T1_degC - t_T0_degC ) * ( T_OUT - _T0_OUT ) / ( _T1_OUT - _T0_OUT );
   }
   return temperature;

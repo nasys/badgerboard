@@ -1,16 +1,81 @@
 #include <Arduino.h>
-#include <EEPROM.h>
+//#include <EEPROM.h>
 
 #include "LowPower.h"
 #include "SoftReset.h"
 
 #include "FaBoHumidity_HTS221.h"
 
+
 #include "badger.h"
 #include "Sodaq_RN2483.h"
 
+volatile bool sodaq_wdt_flag = false;
+
+void sodaq_wdt_enable(wdt_period period)
+{
+	
+	// From TPH_Demo/MyWatchdog.cpp
+	// Both WDE and WDIE
+	__asm__ __volatile__ (  \
+						  "in __tmp_reg__,__SREG__" "\n\t"    \
+						  "cli" "\n\t"    \
+						  "wdr" "\n\t"    \
+						  "sts %0,%1" "\n\t"  \
+						  "out __SREG__,__tmp_reg__" "\n\t"   \
+						  "sts %0,%2" "\n\t" \
+						  : /* no outputs */  \
+						  : "M" (_SFR_MEM_ADDR(_WD_CONTROL_REG)), \
+        "r" (_BV(_WD_CHANGE_BIT) | _BV(WDE)), \
+        "r" ((uint8_t) (((period & 0x08) ? _WD_PS3_MASK : 0x00) | \
+						_BV(WDE) | _BV(WDIE) | (period & 0x07)) ) \
+						  : "r0"  \
+						  );
+}
+
+/*
+void sodaq_wdt_disable()
+{
+	
+	// Using avr/wdt.h
+	wdt_disable();
+	
+}*/
+
+// Resets the WDT counter
+void sodaq_wdt_reset()
+{
+	
+	// Using avr/wdt.h
+	wdt_reset();
+	
+	// Should this be called once per interrupt,
+	// or are we ok calling it with every reset?
+	WDTCSR |= _BV(WDIE);	
+}
+
+void sodaq_wdt_safe_delay(uint32_t ms)
+{
+	// Delay step size
+	/*  uint32_t delay_step = 10;
+	 
+  // Loop through and reset between steps
+  while (ms > delay_step) {
+	 sodaq_wdt_reset();
+	 delay(delay_step);
+	 ms -= delay_step;
+  }
+	 
+  // Delay for the remainder
+  sodaq_wdt_reset();
+  delay(ms);*/
+	sleep_wdt_approx(ms);
+}
+
 static uint64_t millis_offset = 0;
 //static float s_wdt_calib = 1.0;
+
+
 
 uint32_t badger_millis()
 {
@@ -22,7 +87,7 @@ void sleep_wdt(period_t period, uint16_t period_ms, uint32_t* remainder)
 {
 	uint16_t divider = *remainder / period_ms;
 	//  Serial.print(period_ms); Serial.print(" : "); Serial.print(divider); Serial.print(" : "); Serial.print(*remainder);
-	for(int i = 0; i < divider; i++)
+	for(uint16_t i = 0; i < divider; i++)
 	{
 		if(badger_usb_powered())
 		{
@@ -72,6 +137,59 @@ void sleep_wdt_approx(uint32_t sleep_time_ms)
 	sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);
 	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
 }
+/*
+void sleep_on_WDT(uint32_t sleep_time_ms)
+{
+	delay(sleep_time_ms);
+	return;
+	// guarantees no sleep after boot for usb to wake
+	if(badger_usb_powered()) // || millis() < 6000)
+	{
+		delay(sleep_time_ms);
+		return;
+	}
+	if(sleep_time_ms < 15)
+	{
+		delay(sleep_time_ms);
+		//		Serial.println("sleep < 15");
+		return;	
+	}
+	//	sleep_time_ms *= s_wdt_calib;
+	if(sleep_time_ms < 28)
+	{
+		sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
+		delay(sleep_time_ms);
+		return;
+	}
+	sleep_wdt(SLEEP_8S, 8000, &sleep_time_ms);
+	sleep_wdt(SLEEP_4S, 4000, &sleep_time_ms);
+	sleep_wdt(SLEEP_2S, 2000, &sleep_time_ms);
+	sleep_wdt(SLEEP_1S, 1000, &sleep_time_ms);
+	sleep_wdt(SLEEP_500MS, 500, &sleep_time_ms);
+	sleep_wdt(SLEEP_250MS, 250, &sleep_time_ms);  
+	sleep_wdt(SLEEP_120MS, 120, &sleep_time_ms);
+	sleep_wdt(SLEEP_60MS, 60, &sleep_time_ms);
+	sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);
+	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
+}*/
+/*
+void calib_wdt_timer()
+{
+	uint32_t before = millis();
+	LowPower.idle(SLEEP_250MS, ADC_ON, TIMER4_ON, TIMER3_ON, TIMER1_ON, TIMER0_ON, SPI_ON, USART1_ON, TWI_ON, USB_ON);
+	s_wdt_calib = 250 / (float) (millis() - before);
+	Serial.println(millis()); Serial.println(before);
+	Serial.print("WDT calib "); Serial.println(s_wdt_calib);
+}*/
+
+
+/*
+ // AVR WDT ISR
+ ISR(WDT_vect)
+ {
+ sodaq_wdt_flag = true;
+ }*/
+
 // Boot message
 const uint8_t bootMSG[] =
 {
@@ -88,16 +206,8 @@ static uint32_t s_tx_interval_min = 30000;
 
 static uint32_t s_tx_successful_count = 0;
 static uint32_t s_tx_failed_count = 0;
-static bool s_long_range_enabled = false;
 
 static bool s_LoRa_down = false;
-
-void LoRa_tx_interval_min_set(uint32_t interval)
-{
-	if(interval < 30)
-		Serial.println(F("Warning: LoRa TX interval should be higher, eg 30 sec"));
-	s_tx_interval_min = interval;
-}
 
 bool Lora_tx_ready()
 {
@@ -108,12 +218,10 @@ void Lora_transmit_counter(bool success)
 {
 	if(success)
 	{
-//		Serial.println("success++");		
 		s_tx_successful_count++;
 	}
 	else
 	{
-//		Serial.println("failed++");
 		s_tx_failed_count++;
 	}
 	Lora_down_check(success);
@@ -130,7 +238,9 @@ void Lora_down_check(bool success)
 	}
 	if(s_failed_packets > 10)
 	{
+#ifdef	SERIAL_DEBUG	
 		Serial.println(F("Too many failed packets. should restart!"));
+#endif
 		s_LoRa_down = true;
 	}
 }
@@ -140,17 +250,21 @@ bool Lora_requires_reset()
 	return s_LoRa_down;
 }
 
-bool LoRa_enable_long_range()
+bool LoRa_add_sensitivity(uint8_t sensitivity)
 {
-	LoRaBee.wakeUp();
-	bool ok = LoRaBee.setSpreadingFactor(12);
+//	LoRaBee.wakeUp();
+	if(sensitivity > 4)
+		sensitivity = 4;
+	sensitivity = 4 - sensitivity;
+	Serial.print("Lora: Adding sensitivity: SF ");
+	Serial.println(12 - sensitivity);
+	bool ok = LoRaBee.setSpreadingFactor(12 - sensitivity);
 	ok = LoRaBee.setTXPower(15) && ok;
-	ok = LoRaBee.setDataRate(1) && ok;
-	s_long_range_enabled = true;
+	ok = LoRaBee.setDataRate(1 + sensitivity) && ok;
 	return ok;
 }
 
-bool LoRa_init_sleep()
+void LoRa_init_sleep()
 {
 	badger_reset_lora();
 	loraSerial.begin(DEFAULT_BAUDRATE);
@@ -168,16 +282,30 @@ void LoRa_sleep()
 bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16])
 {
 	LoRaBee.setDiag(Serial);
-	
+
+	if(LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, true) == false)
+	{
+		badger_reset_lora();
+		sleep_wdt_approx(1 * 1000UL);
+		if(LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, true) == false)
+		{
+			badger_restart();
+			sleep_wdt_approx(4000);
+			return false;
+		}
+	}
+
 	bool success = false;
 	int i = 0;
-	while(i++ < 5)
+	while(i <= 4)
 	{
-		if (LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, true))
+		if (LoRaBee.sendOTA() == true)
 		{
 			LoRaBee.sleep();
 			s_tx_last_time = badger_millis();
+#ifdef	SERIAL_DEBUG
 			Serial.println(F("OTAA successful."));
+#endif
 			sleep_wdt_approx(12 * 1000UL);
 			bool boot_msg_success = LoRa_send(99, bootMSG, 5, 4);
 			int u = 0;
@@ -194,30 +322,29 @@ bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t
 		}
 		else
 		{
+			LoRa_add_sensitivity(i);
 			LoRaBee.sleep();
-			Serial.print(i);
-			Serial.println(F(" times Connection failed..retrying."));
 			badger_pulse_led(45);	
 			sleep_wdt_approx(60);	  
 			badger_pulse_led(45);
-			sleep_wdt_approx(8000);
-			if(i == 2)
-			{
-				badger_reset_lora();
-//				LoRa_enable_long_range();
-				Serial.println(F("Resetting LoRa module"));
-			}
+			sleep_wdt_approx(10000UL * (i + 1));
+			i++;
 		}
 	}
 	if(success == false)
 	{
 		sleep_wdt_approx(32000);
+#ifdef	SERIAL_DEBUG
 		Serial.println(F("Booting failed."));
+#endif
 		badger_restart();
-		delay(4000);
-		return;
+		sleep_wdt_approx(4000);
+		return false;
 	}
+#ifdef	SERIAL_DEBUG
 	Serial.println(F("Boot msg sent. "));	
+#endif
+	s_tx_interval_min = 20000UL * (1 << i);
 	badger_pulse_led(10);
 	sleep_wdt_approx(60);
 	badger_pulse_led(10);
@@ -238,20 +365,24 @@ struct resend_data
 	uint8_t count = 0;
 } s_resend_data;
 
-bool LoRa_resend_store(uint8_t fPort, uint8_t* data, uint8_t len, int8_t send_count)
+bool LoRa_resend_store(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_count)
 {
 	if(s_resend_data.count != 0)
 	{
+#ifdef	SERIAL_DEBUG
 		Serial.println(F("Cant take new packet into resend buffer, previous not sent"));
+#endif
 		return false;
 	}
 	s_resend_data.fPort = fPort;
 	s_resend_data.len = len;
 	s_resend_data.count = send_count;
 	memcpy(s_resend_data.data, data, len);
-	Serial.println(F("Packet inited in resend buffer"));
-	Serial.println((char*)s_resend_data.data);
+#ifdef	SERIAL_DEBUG
+	Serial.print(F("Packet inited in resend buffer. Retries "));
 	Serial.println(send_count);
+	Serial.println((char*)s_resend_data.data);
+#endif
 	return true;
 }
 
@@ -267,30 +398,33 @@ bool LoRa_resend_try()
 			if(success)
 			{
 				s_resend_data.count = 0;
-				Serial.println(F("resend successful"));
+#ifdef	SERIAL_DEBUG
+				Serial.println(F("Resend successful"));
+#endif
 			}
 			else
 			{
 				s_resend_data.count--;
-				Serial.print(F("resend failed, left "));			
+#ifdef	SERIAL_DEBUG
+				Serial.print(F("Resend failed, Retries left "));			
 				Serial.println(s_resend_data.count);
+#endif
 			}
 		}
 		else
 		{
+#ifdef	SERIAL_DEBUG
 			Serial.println(F("Resend Wait."));
+#endif
 		}
 	}
 	return success;
 }
 
-bool LoRa_send(uint8_t fPort, uint8_t* data, uint8_t len, int8_t send_count)
+bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_count)
 {
 	LoRaBee.wakeUp();
 	LoRaBee.wakeUp();
-//	delay(1000);
-	if(s_long_range_enabled == true)
-		LoRaBee.setDataRate(1);
 
 	uint8_t lora_status;
 	if(send_count == NO_ACK)
@@ -301,41 +435,58 @@ bool LoRa_send(uint8_t fPort, uint8_t* data, uint8_t len, int8_t send_count)
 	{
 		lora_status = LoRaBee.sendReqAck(fPort, data, len, 1);
 	}
-//	delay(1000);
 	LoRaBee.sleep();
 //	Serial.println((char*)data);
 	bool success = false;
 	switch (lora_status) {
 		case NoError:
-			Serial.println(F("Successful transmission."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: Successful transmission."));
+#endif
 			success = true;
 			break;
 		case NoResponse:
-			Serial.println(F("No response."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: No response."));
+#endif
 			break;
 		case Timeout:
-			Serial.println(F("Timed-out. Check serial."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: Timed-out. Check serial."));
+#endif
 			break;
 		case PayloadSizeError:
-			Serial.println(F("Payload too large!"));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: Payload too large!"));
+#endif
 			break;
 		case InternalError:
-			Serial.println(F("Internal error."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: Internal error."));
+#endif
 			badger_restart();
 			break;
 		case Busy:
-			Serial.println(F("The device is busy."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: The device is busy."));
+#endif
 			break;
 		case NetworkFatalError:
-			Serial.println(F("Network fatal error."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: Network fatal error."));
+#endif
 			badger_restart();
 			break;
 		case NotConnected:
-			Serial.println(F("Not connected. Restarting."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: Not connected. Restarting."));
+#endif
 			badger_restart();
 			break;
 		case NoAcknowledgment:
-			Serial.println(F("No acknowledgment."));
+#ifdef	SERIAL_DEBUG
+			Serial.println(F("Lora: No acknowledgment."));
+#endif
 			break;
 		default:
 			break;
@@ -350,29 +501,28 @@ bool LoRa_send(uint8_t fPort, uint8_t* data, uint8_t len, int8_t send_count)
 	return success;
 }
 
-bool LoRa_send(uint8_t fPort, uint8_t* data, uint8_t len)
+bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len)
 {
 	return LoRa_send(fPort, data, len, 1); //NO_ACK);
 }
-
-/*void LoRa_sleep()
-{
-	LoRaBee.wakeUp();
-	LoRaBee.sleep();
-}*/
 
 FaBoHumidity_HTS221 faboHumidity;
 static bool s_fabo_init_successful = false;
 
 void badger_temp_sensor_init()
 {
-	if (faboHumidity.begin()) {
-		Serial.println(F("configured onboard temp/humidity sensor."));
+	if (faboHumidity.begin()) 
+	{
+#ifdef	SERIAL_DEBUG
+		Serial.println(F("Configured onboard temp/humidity sensor."));
+#endif
 		s_fabo_init_successful = true;
 	}
 	else
 	{
-		Serial.println(F("Onboard temp/hum sensor not responding"));
+#ifdef	SERIAL_DEBUG
+		Serial.println(F("Error. Onboard temp/hum sensor not responding!"));
+#endif
 		s_fabo_init_successful = false;
 		badger_pulse_led(2);
 		sleep_wdt_approx(120);
@@ -383,9 +533,7 @@ void badger_temp_sensor_init()
 bool badger_temp_sensor_send()
 {
 	if(s_fabo_init_successful == false)
-	{
 		return false;
-	}
 	char json_data[60];
 	float temp = faboHumidity.getTemperature();
 	float humidity = faboHumidity.getHumidity();
@@ -399,7 +547,9 @@ bool badger_temp_sensor_send()
 	humidity *= 100;
 	int hum_decimal2 = (int)humidity;
 	snprintf(json_data, 60, "{\"T\":%d.%d,\"H\":%d.%d}", temp_decimal1, temp_decimal2, hum_decimal1, hum_decimal2);
+#ifdef	SERIAL_DEBUG
 	Serial.println(json_data);
+#endif
 	return LoRa_send(19, (uint8_t*) json_data, strlen(json_data));
 }
 
@@ -430,16 +580,12 @@ bool badger_temp_sensor_send_status(uint8_t status)
 	int volt_decimal2 = (int)voltage;
 	
 	snprintf(json_data, LORA_TX_BUF_LEN_MAX, "{\"S\":%d,\"T\":%d.%d,\"H\":%d.%d,\"V\":%d.%d,\"P\":%d/%d}", status, temp_decimal1, temp_decimal2, hum_decimal1, hum_decimal2, volt_decimal1, volt_decimal2, (uint16_t)s_tx_successful_count + 1, (uint16_t)s_tx_failed_count);
+#ifdef	SERIAL_DEBUG
 	Serial.println(json_data);
+#endif
 	return LoRa_send(19, (uint8_t*) json_data, strlen(json_data), NO_ACK);
 }
 
-
-
-bool badger_usb_check_init()
-{
-	USBCON |= (1 << OTGPADE);
-}
 
 bool badger_usb_powered()
 { 
@@ -517,7 +663,7 @@ void badger_reset_lora()
 }
 
 
-
+/*
 uint64_t EEP_read_u64(uint16_t addr)
 {
 	union
@@ -554,14 +700,18 @@ uint64_t EEP_load_u64_counter()
 	{
 		uint64_t value = EEP_read_u64(EEP_COUNTER_DATA_ADDR);
 		s_last_stored_value = value;
+#ifdef	SERIAL_DEBUG
 		Serial.print("Restored from EEP ");Serial.println((uint32_t)value);
+#endif
 		return value;
 	}
 	else
 	{
 		EEP_write_u64(EEP_COUNTER_DATA_ADDR, 0);
 		EEPROM.write(EEP_COUNTER_CHECK_ADDR, EEP_COUNTER_CHECK_VALUE);
+#ifdef	SERIAL_DEBUG
 		Serial.println("First init. Stored to EEP 0");
+#endif
 		return 0;
 	}
 }
@@ -572,10 +722,12 @@ void EEP_store_u64_counter(uint64_t x, uint16_t threshold_count)
 	{
 		EEP_write_u64(EEP_COUNTER_DATA_ADDR, x);
 		s_last_stored_value = x;
+#ifdef	SERIAL_DEBUG
 		Serial.print("EEP renewed ");Serial.println((uint32_t)x);
+#endif
 	}
 }
-
+*/
 
 
 long badger_read_vcc_mv() 
@@ -732,13 +884,13 @@ void badger_scheduler::print_soonest()
 	next_in = 0xFFFFFFFF;
 }
 
-bool badger_init()
+void badger_init()
 {
     LoRa_init_sleep();
     pinMode(LED_PIN, INPUT);
     badger_serial_check_connection();
     badger_pulse_led(2000);
-    badger_temp_sensor_init();
+    badger_temp_sensor_init();	
 }
 
 badger_scheduler rare_sched(2000UL, 1, OTHER_SCHED);
@@ -746,7 +898,7 @@ badger_scheduler rare_sched(2000UL, 1, OTHER_SCHED);
 bool badger_sleep_now(uint32_t period_ms)
 {
 	bool rare = rare_sched.run_now() ? true : false;
-	bool success;
+	bool success = false;
 	if(rare)
 	{
 		success = LoRa_resend_try();
@@ -760,13 +912,14 @@ bool badger_sleep_now(uint32_t period_ms)
 	{
 		badger_serial_check_connection();
     }
-//	badger_pulse_led(0);
-	return true;
+	return success;
 }
 
 void badger_restart()
 {
+#ifdef	SERIAL_DEBUG
 	Serial.println("Badger attempting to restart");
+#endif
 	delay(30);
 	soft_restart();
 }

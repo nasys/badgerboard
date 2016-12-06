@@ -35,49 +35,6 @@
 #define debugPrint(...)
 #endif */
 
-volatile bool sodaq_wdt_flag = false;
-
-void sodaq_wdt_enable(wdt_period period)
-{
-	
-	// From TPH_Demo/MyWatchdog.cpp
-	// Both WDE and WDIE
-	__asm__ __volatile__ (  \
-						  "in __tmp_reg__,__SREG__" "\n\t"    \
-						  "cli" "\n\t"    \
-						  "wdr" "\n\t"    \
-						  "sts %0,%1" "\n\t"  \
-						  "out __SREG__,__tmp_reg__" "\n\t"   \
-						  "sts %0,%2" "\n\t" \
-						  : /* no outputs */  \
-						  : "M" (_SFR_MEM_ADDR(_WD_CONTROL_REG)), \
-        "r" (_BV(_WD_CHANGE_BIT) | _BV(WDE)), \
-        "r" ((uint8_t) (((period & 0x08) ? _WD_PS3_MASK : 0x00) | \
-						_BV(WDE) | _BV(WDIE) | (period & 0x07)) ) \
-						  : "r0"  \
-						  );
-}
-
-void sodaq_wdt_reset()
-{
-	
-	
-	wdt_reset();
-	
-	// Should this be called once per interrupt,
-	// or are we ok calling it with every reset?
-	WDTCSR |= _BV(WDIE);
-	
-}
-
-/*void sodaq_wdt_safe_delay(uint32_t ms)
-{
-	// Delay step size
-	sleep_wdt_approx(ms);
-}
-*/
-
-
 // Structure for mapping error response strings and error codes.
 typedef struct StringEnumPair
 {
@@ -137,8 +94,13 @@ bool Sodaq_RN2483::initOTA(SerialType& stream, const uint8_t devEUI[8], const ui
         setMacParam(STR_DEV_EUI, devEUI, 8) &&
         setMacParam(STR_APP_EUI, appEUI, 8) &&
         setMacParam(STR_APP_KEY, appKey, 16) &&
-        setMacParam(STR_ADR, BOOL_TO_ONOFF(adr)) &&
-        joinNetwork(STR_OTAA);
+        setMacParam(STR_ADR, BOOL_TO_ONOFF(adr));
+}
+
+bool Sodaq_RN2483::sendOTA()
+{
+	wakeUp();
+	return joinNetwork(STR_OTAA);
 }
 
 // Initializes the device and connects to the network using Activation By Personalization.
@@ -176,7 +138,7 @@ uint8_t Sodaq_RN2483::sendReqAck(uint8_t port, const uint8_t* payload,
         // not a fatal error -just show a debug message
         //debugPrintLn("[sendReqAck] Non-fatal error: setting number of retries failed.");
 		wakeUp();
-		Serial.println("extrawakeupeakeup");
+//		Serial.println("extrawakeupeakeup");
 		setMacParam(STR_RETRIES, maxRetries);
     }
     return macTransmit(STR_CONFIRMED, port, payload, size);
@@ -247,7 +209,7 @@ uint8_t Sodaq_RN2483::getHWEUI(uint8_t* buffer, uint8_t size)
         if (readLn() > 0) {
             //debugPrintLn(this->inputBuffer);
             while (outputIndex < size
-                && inputIndex + 1 < this->inputBufferSize
+                && inputIndex + 1U < this->inputBufferSize
                 && this->inputBuffer[inputIndex] != 0
                 && this->inputBuffer[inputIndex + 1] != 0) {
                 buffer[outputIndex] = HEX_PAIR_TO_BYTE(
@@ -342,13 +304,13 @@ bool Sodaq_RN2483::expectString(const char* str, uint16_t timeout)
 //				Serial.println("exStr matching");
                 return true;
             }
-			Serial.println("exStr not eq");
+//			Serial.println("exStr not eq");
             return false;
         }
 //		Serial.println("_");
     }
-			Serial.print("exStr timeout");
-			Serial.println(timeout);
+//			Serial.print("exStr timeout");
+//			Serial.println(timeout);
     return false;
 }
 
@@ -523,9 +485,8 @@ uint8_t Sodaq_RN2483::lookupMacTransmitError(const char* error)
         if (strcmp(p->stringValue, error) == 0) {
             //debugPrint("[lookupMacTransmitError]: found ");
             //debugPrintLn(p->enumValue);
-Serial.print("[lookupMacTransmitError]: found ");
-Serial.println(error);
-Serial.println(p->enumValue);
+			
+Serial.print("LoRa warning: ");
 Serial.println(error);
             return p->enumValue;
         }
@@ -539,7 +500,7 @@ uint8_t Sodaq_RN2483::macTransmit(const char* type, uint8_t port, const uint8_t*
 {
 	this->wakeUpIfSleeping();
     //debugPrintLn("[macTransmit]");
-
+//	sleep_wdt_approx(15);
     this->loraStream->print(STR_CMD_MAC_TX);
     this->loraStream->print(type);
     this->loraStream->print(port);
@@ -553,7 +514,7 @@ uint8_t Sodaq_RN2483::macTransmit(const char* type, uint8_t port, const uint8_t*
     this->loraStream->print(CRLF);
 
     if (!expectOK()) {
-		Serial.println("EEEEEEeeee!exoectOK");
+//		Serial.println("EEEEEEeeee!exoectOK");
         return lookupMacTransmitError(this->inputBuffer); // inputBuffer still has the last line read
     }
 //	Serial.println("noExpOk");
@@ -581,12 +542,12 @@ uint8_t Sodaq_RN2483::macTransmit(const char* type, uint8_t port, const uint8_t*
             } else {
                 // lookup the error message
                 //debugPrintLn("Some other string received (error)");
-				Serial.println("wrong string");
+//				Serial.println("wrong string");
                 return lookupMacTransmitError(this->inputBuffer);
             }
         }
     }
-	Serial.println("EEEEEEEEEEE Main timeout");	
+//	Serial.println("EEEEEEEEEEE Main timeout");	
     //debugPrintLn("Timed-out waiting for a response!");
     return Timeout;
 }
@@ -662,9 +623,12 @@ bool Sodaq_RN2483::setSpreadingFactor(uint8_t sf)
 
     bool ok = expectOK();
 	if(ok)
-		Serial.println("spreading factor set!");
+	{
+		Serial.print("LoRa: Spreading factor set to ");
+		Serial.println(sf);
+	}
 	else
-		Serial.println("spreading factor not set!");
+		Serial.println("LoRa: warning. Spreading factor not set!");
 	return ok;
 }
 
@@ -681,9 +645,12 @@ bool Sodaq_RN2483::setTXPower(int8_t power)
 
     bool ok = expectOK();
 	if(ok)
-		Serial.println("power set!");
+	{
+		Serial.print("LoRa: power set to ");
+		Serial.println(power);
+	}
 	else
-		Serial.println("power not set!");
+		Serial.println("LoRa: power not set!");
 	return ok;
 }
 
@@ -698,9 +665,12 @@ bool Sodaq_RN2483::setDataRate(uint8_t dr)
 
     bool ok = expectOK();
 	if(ok)
-		Serial.println("datarate set!");
+	{
+		Serial.print("LoRa: datarate set to ");
+		Serial.println(dr);
+	}
 	else
-		Serial.println("datarate not set!");
+		Serial.println("LoRa: datarate not set!");
 	return ok;
 }
 

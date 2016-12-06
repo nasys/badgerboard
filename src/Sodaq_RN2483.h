@@ -20,6 +20,7 @@
 
 #ifndef _Sodaq_RN2483_h
 #define _Sodaq_RN2483_h
+
 #include <Arduino.h>
 
 #include <stdint.h>
@@ -97,9 +98,12 @@ public:
     uint32_t getDefaultBaudRate() { return DEFAULT_BAUDRATE; };
 
     // Initializes the device and connects to the network using Over-The-Air Activation.
-    // Returns true on successful connection.
+    // Returns true on successful setup for sendOTA.
     bool initOTA(SerialType& stream, const uint8_t devEUI[8], const uint8_t appEUI[8], const uint8_t appKey[16], bool adr = true);
 
+	// sends the actual OTA request.
+	bool sendOTA();
+	
     // Initializes the device and connects to the network using Activation By Personalization.
     // Returns true on successful connection.
     bool initABP(SerialType& stream, const uint8_t devAddr[4], const uint8_t appSKey[16], const uint8_t nwkSKey[16], bool adr = true);
@@ -157,7 +161,7 @@ public:
 
 	bool setTXPower(int8_t power);	
 
-	bool Sodaq_RN2483::setDataRate(uint8_t dr);
+	bool setDataRate(uint8_t dr);
 
 private:
     // The stream that communicates with the device.
@@ -238,8 +242,7 @@ private:
     // when a "mac rx" message has been received. It is called internally by macTransmit().
     // Returns 0 (NoError) or otherwise one of the MacTransmitErrorCodes.
     uint8_t onMacRX();
-		
-	bool Sodaq_RN2483::setRadioParam(const char* paramName, const char* paramValue);	
+	bool setRadioParam(const char* paramName, const char* paramValue);
 };
 
 extern Sodaq_RN2483 LoRaBee;

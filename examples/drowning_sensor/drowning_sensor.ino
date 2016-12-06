@@ -13,9 +13,13 @@ const uint8_t appKey[16] = {
 const uint8_t appEUI[8] = {
 
 };
-
-badger_scheduler status_sched(10 * 60 * 1000UL, 60 * 1000UL, PRINT_ENABLE);
-
+/* 10 * 60 * 1000UL defines interval when temperature is sent
+ *  60 * 1000UL defines offset from beginning
+ *  PRINT_ENABLE - prints to serial port " NEXT TX IN ..."
+ *  PRINT_DISABLE - disables " NEXT TX IN ..." message
+ */
+badger_scheduler status_sched(10 * 60 * 1000UL, 30 * 1000UL, PRINT_ENABLE);
+badger_scheduler drowning_check(5 * 60 * 1000UL, 150 * 1000UL, PRINT_ENABLE);
 void setup() 
 {
 // Arduino Pin Setup
@@ -56,8 +60,11 @@ bool water_level() //read analog value and decide if sensor is in water or not
 void loop()
 {
     bool badger_drowning = water_level();
-
-    if(badger_drowning == false)
+    static uint32_t last_send_time = 0;
+if(drowning_check.run_now())
+  {
+     // this function is called when the time defined at the "drowning_check" variable is reached
+     if(badger_drowning == false)
     {
         LoRa_send(30,(uint8_t*)"OK",2,3); 
         Serial.println("everything is OK ");
@@ -67,6 +74,7 @@ void loop()
         LoRa_send(30,(uint8_t*)"Drowning",8,3);
         Serial.println("your sensor is in water");        
     }
+  }
     
     if(status_sched.run_now())
     {

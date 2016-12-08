@@ -11,6 +11,7 @@
 ### **Table of Contents**
  * [Prerequisites](https://github.com/nasys/badgerboard/tree/readme_test_branch#prerequisites)
  	* [Mac OS X terminal installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#mac-os-x)
+	* [Downloads](https://github.com/nasys/badgerboard/tree/readme_test_branch#downloads)
  	* [Windows cmd installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#windows)
  	* [manual installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#manual)
  * [Badgerboard Setup](https://github.com/nasys/badgerboard/tree/readme_test_branch#badgerboard-setup)
@@ -21,8 +22,14 @@
  * [Licences](https://github.com/nasys/badgerboard/tree/readme_test_branch#licences)
 
 ### Prerequisites
+
+##### Downloads
+
+* [**_Arduino_**](https://www.arduino.cc/en/Main/Software)
+* [**_Git_**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git#Installing-on-Mac)
+
 ##### Mac OS X
-* Install [**_git_**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git#Installing-on-Mac)
+
 * Open "**Finder**" (Press &#8984;+ Space ) 
 * type in " terminal " and open it
 * type "cd Documents/Arduino/libraries"
@@ -55,7 +62,7 @@ In case all of this works then you have successfully uploaded your first program
 #### LoRa sensor setup
 
 * Open "**File -> Examples -> Badger -> LoRa_temp_hum**"
-* Replace examples **_devEUI_**(that came with badgerboard), **_appEUI_** and **_appKey_** with the ones that Your LoRaWAN™ solution provider has assigned.  
+*Replace examples **_devEUI_**[that came with badgerboard(16 hex char)], **_appEUI_** and **_appKey_**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
 * Upload Your code to Badgerboard
 
 #### Known issues

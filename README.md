@@ -24,9 +24,16 @@
 ### Prerequisites
 
 ##### Downloads
+<<<<<<< HEAD
  
 * **Arduino**<a href={https://www.arduino.cc/en/Main/Software} target="_blank">
 * **Git**<a href={https://git-scm.com/book/en/v2/Getting-Started-Installing-Git} target="_blank">
+=======
+
+* [Arduino](https://www.arduino.cc/en/Main/Software){:target="_blank"}
+* <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino</a>
+* <a href="example.com" target="_blank">Git</a>
+>>>>>>> 6298a8fc46eba6918e5ddbb77085fb72ea4f9213
 
 ##### Mac OS X
 

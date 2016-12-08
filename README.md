@@ -63,7 +63,7 @@ In case all of this works then you have successfully uploaded your first program
 #### LoRa sensor setup
 
 * Open "**File -> Examples -> Badger -> LoRa_temp_hum**"
-*Replace examples **_devEUI_** [that came with badgerboard(16 hex char)], **_appEUI_**(16 hex char) and **_appKey_**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
+* Replace examples **_devEUI_**[that came with badgerboard(16 hex char)], **_appEUI_**(16 hex char) and **_appKey_**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
 * Upload Your code to Badgerboard
 
 #### Known issues

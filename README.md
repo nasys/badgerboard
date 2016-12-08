@@ -24,9 +24,9 @@
 ### Prerequisites
 
 ##### Downloads
-
-* <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino</a>
-* <a href="example.com" target="_blank">Git</a>
+ 
+* **Arduino**<a href={https://www.arduino.cc/en/Main/Software} target="_blank">
+* **Git**<a href={https://git-scm.com/book/en/v2/Getting-Started-Installing-Git} target="_blank">
 
 ##### Mac OS X
 
@@ -84,9 +84,9 @@ In case all of this works then you have successfully uploaded your first program
 
 	
 #### Used libraries
-* <a href="https://github.com/FaBoPlatform/FaBoHumidity-HTS221-Library" target="_blank">FaBoHumidity_HTS221</a>
-* <a href="https://github.com/rocketscream/Low-Power" target="_blank">LowPower</a>
-* <a href="https://github.com/SodaqMoja/Sodaq_RN2483" target="_blank">Sodaq_RN2483</a>
+* **FaBoHumidity_HTS221**<a href={https://github.com/FaBoPlatform/FaBoHumidity-HTS221-Library} target="_blank">
+* **LowPower**<a href={https://github.com/rocketscream/Low-Power} target="_blank">
+* **Sodaq_RN2483**<a href={https://github.com/SodaqMoja/Sodaq_RN2483 target="_blank">
 
 
 

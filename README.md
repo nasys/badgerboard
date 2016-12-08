@@ -17,7 +17,7 @@
 	* [Test out your Badgerboard](https://github.com/nasys/badgerboard/tree/readme_test_branch#test-out-your-badgerboard) 
  	* [LoRa sensor setup](https://github.com/nasys/badgerboard/tree/readme_test_branch#lora-sensor-setup)
  * [Known issues](https://github.com/nasys/badgerboard/tree/readme_test_branch#known-issues)
- * [Used library's](https://github.com/nasys/badgerboard/tree/readme_test_branch#used-libraryies)
+ * [Used libraries](https://github.com/nasys/badgerboard/tree/readme_test_branch#used-libraries)
  * [Licences](https://github.com/nasys/badgerboard/tree/readme_test_branch#licences)
 
 ### Prerequisites
@@ -76,7 +76,7 @@ In case all of this works then you have successfully uploaded your first program
  
 
 	
-#### Used libraryies
+#### Used libraries
 * [FaBoHumidity_HTS221](https://github.com/FaBoPlatform/FaBoHumidity-HTS221-Library)
 * [LowPower](https://github.com/rocketscream/Low-Power)
 * [Sodaq_RN2483](https://github.com/SodaqMoja/Sodaq_RN2483)

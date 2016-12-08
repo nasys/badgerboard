@@ -25,8 +25,8 @@
 
 ##### Downloads
 
-* [**_Arduino_**](https://www.arduino.cc/en/Main/Software)
-* [**_Git_**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git#Installing-on-Mac)
+* <a href="https://www.arduino.cc/en/Main/Software" target="_blank">**Arduino**</a>
+* <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git#Installing-on-Mac" target="_blank">**Git**</a>
 
 ##### Mac OS X
 
@@ -39,7 +39,7 @@
 NB! with this installation you can use"git pull" to get the latest version of the library
 
 #### Windows
-* Install [**_git_**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git#Installing-on-Windows)
+
 * siia peab midagi veel panema, aga pole olnud võimalust windowsi peal seda proovida
 
 
@@ -84,9 +84,9 @@ In case all of this works then you have successfully uploaded your first program
 
 	
 #### Used libraries
-* [FaBoHumidity_HTS221](https://github.com/FaBoPlatform/FaBoHumidity-HTS221-Library)
-* [LowPower](https://github.com/rocketscream/Low-Power)
-* [Sodaq_RN2483](https://github.com/SodaqMoja/Sodaq_RN2483)
+* <a href="https://github.com/FaBoPlatform/FaBoHumidity-HTS221-Library" target="_blank">**FaBoHumidity_HTS221**</a>
+* <a href="https://github.com/rocketscream/Low-Power" target="_blank">**LowPower**</a>
+* <a href="https://github.com/SodaqMoja/Sodaq_RN2483" target="_blank">**Sodaq_RN2483**</a>
 
 
 

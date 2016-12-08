@@ -86,16 +86,6 @@ In case all of this works then you have successfully uploaded your first program
 ### **Licences**
 
 * All of the source files are distributed under the beerware license except where specified otherwise (i.e. external libraries)
- ------------------------------------------------------------------------
- 	 "THE BEER-WARE LICENSE" (Revision 42):
- 	 < Nordic Automation Systems > wrote this file.  As long as you retain this 
-     notice you can do whatever you want with this stuff(As long you don't 
-     violate other library's licences.
-     If we meet some day, and you think
- 	 this stuff is worth it, you can buy a beer in return.   
-     Badgerboard development team
- 	
- ----------------------------------------------------------------------------
  
 In case you have any questions :e-mail: [contact us](mailto:badgerboard@nasys.no)
 

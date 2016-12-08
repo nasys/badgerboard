@@ -25,13 +25,9 @@
 
 ##### Downloads
 
-<<<<<<< HEAD
+
 * [**Arduino**](https://www.arduino.cc/en/Main/Software)
 * [**Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-=======
-* <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino</a>
-* <a href="example.com" target="_blank">Git</a>
->>>>>>> 00bf8769135b35ae179aa643fe80d9883a901314
 
 ##### Mac OS X
 

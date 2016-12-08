@@ -25,7 +25,6 @@
 
 ##### Downloads
 
-* jljkl [Arduino](https://www.arduino.cc/en/Main/Software){:target="_blank"} jljkl
 * <a href="https://www.arduino.cc/en/Main/Software" target="_blank">Arduino</a>
 * <a href="example.com" target="_blank">Git</a>
 

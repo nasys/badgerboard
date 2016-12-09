@@ -95,5 +95,9 @@ In case all of this works then you have successfully uploaded your first program
 
 * All of the source files are distributed under the beerware license except where specified otherwise (i.e. external libraries)
  
-In case you have any questions :e-mail: [contact us](mailto:badgerboard@nasys.no)
+#### Contacts
+In case you found the instructions incomplete or have any questions regarding Badgerboard library
+You can :
+Open new thread under [issues](https://github.com/nasys/badgerboard/issues)
+:e-mail: [contact us](mailto:badgerboard@nasys.no)
 

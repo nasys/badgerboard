@@ -98,6 +98,6 @@ In case all of this works then you have successfully uploaded your first program
 #### Contacts
 In case you found the instructions incomplete or have any questions regarding Badgerboard library
 You can :
-Open new thread under [issues](https://github.com/nasys/badgerboard/issues)
-:e-mail: [contact us](mailto:badgerboard@nasys.no)
+* Open new thread under [issues](https://github.com/nasys/badgerboard/issues)
+* :e-mail: [contact us](mailto:badgerboard@nasys.no)
 

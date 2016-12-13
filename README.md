@@ -32,28 +32,29 @@
 ##### Mac OS X
 
 * Open "**Finder**" (Press &#8984;+ Space ) 
-* type in " terminal " and open it
+* type in "terminal" and open it
 * type "cd Documents/Arduino/libraries"
 * type "git clone https://github.com/nasys/badgerboard"
 * Now when you open up your Arduino _Badgerboard_ library should appear under **Sketch -> Include library**
 
 NB! with this installation you can use"git pull" to get the latest version of the library
 
-#### Windows
+##### Windows
 
 * siia peab midagi veel panema, aga pole olnud võimalust windowsi peal seda proovida
 
 
 #### manual
 * Download this library as **.zip** file
-* Open Arduino and include it under **_sketch -> include library -> add .zip library_**
-* Open **_files -> examples -> badger -> LoRa_temp_hum_**
+* Open Arduino and include it under **Sketch -> Include library -> add .zip library**
+* Open **Files -> Examples -> badger -> LoRa_temp_hum**
+
 ### **Badgerboard setup**
 #### Test out your Badgerboard
 
 * connect Badgerboard to your PC 
 * Open Arduino
-* Open Blink example ( **Files > Examples > Basic > Blink** )
+* Open Blink example **Files -> Examples -> Basic -> Blink**
 * Change the time(number in milliseconds) inside the brackets after "**delay**" to change the speed of blinking
 * To upload click on the right pointing arrow on the top-left corner of your Arduino window
 

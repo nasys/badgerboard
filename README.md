@@ -18,6 +18,7 @@
 	* [Test out your Badgerboard](https://github.com/nasys/badgerboard/tree/readme_test_branch#test-out-your-badgerboard) 
  	* [LoRa sensor setup](https://github.com/nasys/badgerboard/tree/readme_test_branch#lora-sensor-setup)
  * [Known issues](https://github.com/nasys/badgerboard/tree/readme_test_branch#known-issues)
+ * [Version log](https://github.com/nasys/badgerboard/tree/readme_test_branch#version-log)
  * [Used libraries](https://github.com/nasys/badgerboard/tree/readme_test_branch#used-libraries)
  * [Licences](https://github.com/nasys/badgerboard/tree/readme_test_branch#licences)
 
@@ -41,9 +42,6 @@ NB! with this installation you can use"git pull" to get the latest version of th
 
 ##### Windows
 
-* siia peab midagi veel panema, aga pole olnud võimalust windowsi peal seda proovida
-
-
 #### manual
 * Download this library as **.zip** file
 * Open Arduino and include it under **Sketch -> Include library -> add .zip library**
@@ -63,7 +61,7 @@ In case all of this works then you have successfully uploaded your first program
 
 #### LoRa sensor setup
 
-* Open "**File -> Examples -> Badger -> LoRa_temp_hum**"
+* Open **File -> Examples -> Badger -> LoRa_temp_hum**
 * Replace examples **_devEUI_**[that came with badgerboard(16 hex char)], **_appEUI_**(16 hex char) and **_appKey_**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
 * Upload Your code to Badgerboard
 
@@ -89,7 +87,7 @@ should look like
 #### Known issues
 
 * Works only with Arduino version 1.6.10 and later
-
+### Version log
 #### Version 0.0.2
 :calendar:06.12.2016
 
@@ -113,7 +111,7 @@ should look like
 
 ### **Licences**
 
-* All of the source files are distributed under the beerware license except where specified otherwise (i.e. external libraries)
+All of the source files are distributed under the beerware license except where specified otherwise (i.e. external libraries)
  
 #### Contacts
 In case you found the instructions incomplete or have any questions regarding Badgerboard library

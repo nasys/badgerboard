@@ -85,7 +85,9 @@ In Arduino code your **devEUI**, **appEUI** and **appKey** are represented by ch
 	};
 #### Known issues
 
+* Take a look under [troubleshooting](https://github.com/nasys/badgerboard/wiki/Troubleshooting) page
 * Works only with Arduino version 1.6.10 and later
+
 
 ### Version log
 

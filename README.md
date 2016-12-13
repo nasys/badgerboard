@@ -38,8 +38,6 @@
 * type "git clone https://github.com/nasys/badgerboard"
 * Now when you open up your Arduino _Badgerboard_ library should appear under **Sketch -> Include library**
 
-NB! with this installation you can use"git pull" to get the latest version of the library
-
 ##### Windows
 
 Coming soon

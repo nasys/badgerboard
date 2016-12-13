@@ -66,7 +66,7 @@ In case all of this works then you have successfully uploaded your first program
 * Upload Your code to Badgerboard
 
 In Arduino code your **_devEUI_**, **_appEUI_** and **_appKey_**
-should look like 
+should look similar to this example: 
 
 	const uint8_t devEUI[8] = {
 	0x11, 0x11, 0x22, 0x22,

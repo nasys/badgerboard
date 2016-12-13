@@ -77,6 +77,8 @@ bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len);
 /** @brief Sends data over LoRa network into fPort port and requests acknowledge, if send count > 1. */
 bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_count);
 
+uint16_t LoRa_receive(uint8_t* buffer, uint16_t size, uint16_t payloadStartPosition = 0);
+
 void Lora_down_check(bool success);
 
 bool LoRa_resend_try();

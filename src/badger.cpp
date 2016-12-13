@@ -393,7 +393,7 @@ bool LoRa_resend_try()
 	{
 		if(Lora_tx_ready())
 		{
-			success = LoRa_send(s_resend_data.fPort, s_resend_data.data, s_resend_data.len, 1);
+			success = LoRa_send(s_resend_data.fPort, s_resend_data.data, s_resend_data.len, 3);
 //			Lora_transmit_counter(success);
 			if(success)
 			{
@@ -433,7 +433,7 @@ bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_coun
 	}
 	else
 	{
-		lora_status = LoRaBee.sendReqAck(fPort, data, len, 1);
+		lora_status = LoRaBee.sendReqAck(fPort, data, len, 2);
 	}
 	LoRaBee.sleep();
 //	Serial.println((char*)data);
@@ -503,7 +503,12 @@ bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_coun
 
 bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len)
 {
-	return LoRa_send(fPort, data, len, 1); //NO_ACK);
+	return LoRa_send(fPort, data, len, 3); //NO_ACK);
+}
+
+uint16_t LoRa_receive(uint8_t* buffer, uint16_t size, uint16_t payloadStartPosition)
+{
+	return LoRaBee.receive(buffer, size, payloadStartPosition);
 }
 
 FaBoHumidity_HTS221 faboHumidity;
@@ -583,7 +588,7 @@ bool badger_temp_sensor_send_status(uint8_t status)
 #ifdef	SERIAL_DEBUG
 	Serial.println(json_data);
 #endif
-	return LoRa_send(19, (uint8_t*) json_data, strlen(json_data), NO_ACK);
+	return LoRa_send(19, (uint8_t*) json_data, strlen(json_data), 3);
 }
 
 

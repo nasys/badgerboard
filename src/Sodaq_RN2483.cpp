@@ -253,6 +253,7 @@ void Sodaq_RN2483::wakeUp()
     this->loraStream->write((uint8_t)0x55);
     this->loraStream->flush();
 	this->sleep_enabled = false;
+	
 }
 
 void Sodaq_RN2483::sleep()
@@ -524,15 +525,13 @@ uint8_t Sodaq_RN2483::macTransmit(const char* type, uint8_t port, const uint8_t*
     unsigned long timeout = millis() + RECEIVE_TIMEOUT; // hard timeout
     while (millis() < timeout) {
         sodaq_wdt_reset();
+		onMacRX();
         //debugPrint(".");
         if (readLn() > 0) {
-            //debugPrintLn(".");//debugPrint("(");//debugPrint(this->inputBuffer);//debugPrintLn(")");
-
             if (strstr(this->inputBuffer, " ") != NULL) // to avoid double delimiter search
             {
                 // there is a splittable line -only case known is mac_rx
                 //debugPrintLn("Splittable response found");
-//				Serial.println("Splittable response found");
                 return onMacRX();
             } else if (strstr(this->inputBuffer, STR_RESULT_MAC_TX_OK)) {
                 // done
@@ -557,11 +556,9 @@ uint8_t Sodaq_RN2483::macTransmit(const char* type, uint8_t port, const uint8_t*
 // Returns 0 (NoError) or otherwise one of the MacTransmitErrorCodes.
 uint8_t Sodaq_RN2483::onMacRX()
 {
-    //debugPrintLn("[onMacRX]");
 
     // parse inputbuffer, put payload into packet buffer
     char* token = strtok(this->inputBuffer, " ");
-
     // sanity check
     if (strcmp(token, STR_RESULT_MAC_RX) != 0) {
         //debugPrintLn("[onMacRX]: mac_rx keyword not found!");
@@ -576,6 +573,8 @@ uint8_t Sodaq_RN2483::onMacRX()
 
     uint16_t len = strlen(token) + 1; // include termination char
     memcpy(this->receivedPayloadBuffer, token, len <= this->receivedPayloadBufferSize ? len : this->receivedPayloadBufferSize);
+
+    
 
     this->packetReceived = true; // enable receive() again
     return NoError;

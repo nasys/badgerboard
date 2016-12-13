@@ -11,16 +11,16 @@
 ### **Table of Contents**
  * [Prerequisites](#prerequisites)
  	* [Mac OS X terminal installation](#mac-os-x)
-	* [Downloads](https://github.com/nasys/badgerboard/tree/readme_test_branch#downloads)
- 	* [Windows cmd installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#windows)
- 	* [manual installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#manual)
- * [Badgerboard Setup](https://github.com/nasys/badgerboard/tree/readme_test_branch#badgerboard-setup)
-	* [Test out your Badgerboard](https://github.com/nasys/badgerboard/tree/readme_test_branch#test-out-your-badgerboard) 
- 	* [LoRa sensor setup](https://github.com/nasys/badgerboard/tree/readme_test_branch#lora-sensor-setup)
- * [Known issues](https://github.com/nasys/badgerboard/tree/readme_test_branch#known-issues)
- * [Version log](https://github.com/nasys/badgerboard/tree/readme_test_branch#version-log)
- * [Used libraries](https://github.com/nasys/badgerboard/tree/readme_test_branch#used-libraries)
- * [Licences](https://github.com/nasys/badgerboard/tree/readme_test_branch#licences)
+	* [Downloads](#downloads)
+ 	* [Windows cmd installation](#windows-cmd-installation)
+ 	* [manual installation](#manual-installation)
+ * [Badgerboard Setup](#badgerboard-setup)
+	* [Test out your Badgerboard](#test-out-your-badgerboard) 
+ 	* [LoRa sensor setup](#lora-sensor-setup)
+ * [Known issues](#known-issues)
+ * [Version log](#version-log)
+ * [Used libraries](#used-libraries)
+ * [Licences](#licences)
 
 ### Prerequisites
 

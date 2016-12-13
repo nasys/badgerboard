@@ -87,7 +87,9 @@ should look like
 #### Known issues
 
 * Works only with Arduino version 1.6.10 and later
+
 ### Version log
+
 #### Version 0.0.2
 :calendar:06.12.2016
 

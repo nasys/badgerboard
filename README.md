@@ -9,8 +9,8 @@
 ============================
 
 ### **Table of Contents**
- * [Prerequisites](https://github.com/nasys/badgerboard/tree/readme_test_branch#prerequisites)
- 	* [Mac OS X terminal installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#mac-os-x)
+ * [Prerequisites](#prerequisites)
+ 	* [Mac OS X terminal installation](#mac-os-x)
 	* [Downloads](https://github.com/nasys/badgerboard/tree/readme_test_branch#downloads)
  	* [Windows cmd installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#windows)
  	* [manual installation](https://github.com/nasys/badgerboard/tree/readme_test_branch#manual)

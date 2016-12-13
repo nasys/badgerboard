@@ -36,7 +36,7 @@
 * type in "terminal" and open it
 * type "cd Documents/Arduino/libraries"
 * type "git clone https://github.com/nasys/badgerboard"
-* Now when you open up your Arduino _Badgerboard_ library should appear under **Sketch -> Include library**
+* Now when you open up your Arduino and _Badgerboard_ library should appear under **Sketch -> Include library**
 
 ##### Windows
 

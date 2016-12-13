@@ -65,8 +65,10 @@ In case all of this works then you have successfully uploaded your first program
 * Open "**File -> Examples -> Badger -> LoRa_temp_hum**"
 * Replace examples **_devEUI_**[that came with badgerboard(16 hex char)], **_appEUI_**(16 hex char) and **_appKey_**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
 * Upload Your code to Badgerboard
+
 In Arduino code your **_devEUI_**, **_appEUI_** and **_appKey_**
 should look like 
+
 	const uint8_t devEUI[8] = {
 	0x11, 0x11, 0x22, 0x22,
 	0x33, 0x33, 0x44, 0x44

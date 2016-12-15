@@ -10,9 +10,9 @@
 
 ### **Table of Contents**
  * [Prerequisites](#prerequisites)
- 	* [Mac OS X terminal installation](#mac-os-x)
-	* [Downloads](#downloads)
- 	* [Windows cmd installation](#windows-cmd-installation)
+ 	* * [Downloads](#downloads)
+ 	* [Mac OS X installation with Git](#mac-os-x-installation-with-git)
+ 	* [Windows installation with Git](#windows-installation-with-git)
  	* [manual installation](#manual-installation)
  * [Badgerboard Setup](#badgerboard-setup)
 	* [Test out your Badgerboard](#test-out-your-badgerboard) 
@@ -44,7 +44,10 @@
 Coming soon
 
 #### manual installation
-* Download this library as **.zip** file
+* [Download](https://github.com/nasys/badgerboard/archive/master.zip) this library as **.zip** file
+
+now this file is in downloads folder named Badgerboard-master.zip
+
 * Open Arduino and include it under **Sketch -> Include library -> add .zip library**
 * Open **Files -> Examples -> badger -> LoRa_temp_hum**
 
@@ -61,7 +64,7 @@ Coming soon
 * Open Blink example **Files -> Examples -> Basic -> Blink**
 * Make sure you have chosen correct board  **Tools -> Board -> LilyPad Arduino USB** and correct port **Tools -> Port** 
 * Change the time(number in milliseconds) inside the brackets after "**delay**" to change the speed of blinking
-* To upload click on the right pointing arrow on the top-left corner of your Arduino window
+* To **upload** click on the __right pointing arrow__ on the top-left corner of your Arduino window
 
 In case all of this works then you have successfully uploaded your first program to Badgerboard
 

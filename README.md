@@ -10,7 +10,7 @@
 
 ### **Table of Contents**
  * [Prerequisites](#prerequisites)
- 	* * [Downloads](#downloads)
+ 	* [Downloads](#downloads)
  	* [Mac OS X installation with Git](#mac-os-x-installation-with-git)
  	* [Windows installation with Git](#windows-installation-with-git)
  	* [manual installation](#manual-installation)
@@ -58,7 +58,7 @@ now this file is in downloads folder named Badgerboard-master.zip
 
 ```
 
-
+* Make sure Badgerboard power switch is turned ON (button towards USB port)
 * connect Badgerboard to your PC/Mac 
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**

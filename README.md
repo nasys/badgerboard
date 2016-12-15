@@ -31,7 +31,7 @@
 * [**Arduino**](https://www.arduino.cc/en/Main/Software)
 * [**Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
-##### Mac OS X
+##### Mac OS X installation with Git
 
 * Open "**Finder**" (Press &#8984;+ Space ) 
 * type in "terminal" and open it
@@ -39,11 +39,11 @@
 * type "git clone https://github.com/nasys/badgerboard"
 * Now when you open up your Arduino and _Badgerboard_ library should appear under **Sketch -> Include library**
 
-##### Windows
+##### Windows installation with Git
 
 Coming soon
 
-#### manual
+#### manual installation
 * Download this library as **.zip** file
 * Open Arduino and include it under **Sketch -> Include library -> add .zip library**
 * Open **Files -> Examples -> badger -> LoRa_temp_hum**

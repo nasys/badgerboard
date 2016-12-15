@@ -52,8 +52,7 @@ Coming soon
 ## DO NOT POWER ON WITHOUT ANTENNA!
 
 ```diff
-+ this will be highlighted in green
-- this will be highlighted in red
+- ## DO NOT POWER ON WITHOUT ANTENNA! -
 ```
 * connect Badgerboard to your PC/Mac 
 * Open Arduino

@@ -65,11 +65,11 @@ In case all of this works then you have successfully uploaded your first program
 #### LoRa sensor setup
 
 * Open **File -> Examples -> Badgerboard -> LoRa_temp_hum**
-* Replace examples **devEUI**(16 hex char), **appEUI**(16 hex char) and **appKey**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
+* Replace examples **devEUI**(16 hex char), **appEUI**(16 hex char) and **appKey**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.([example 1](#example-1)) 
 * Upload Your code to Badgerboard
 
 In Arduino code your **devEUI**, **appEUI** and **appKey** are represented by char array and should look similar to this example
-
+##### example 1
 	const uint8_t devEUI[8] = {
 	0x11, 0x11, 0x22, 0x22,
 	0x33, 0x33, 0x44, 0x44
@@ -86,6 +86,10 @@ In Arduino code your **devEUI**, **appEUI** and **appKey** are represented by ch
 	0x11, 0x22, 0x33, 0x44,
 	0x55, 0x66, 0x77, 0x88
 	};
+
+### Debugging
+
+To see Debugging messages open Serial Monitor **Tools -> Serial Monitor**
 #### Known issues
 
 * Take a look under [troubleshooting](https://github.com/nasys/badgerboard/wiki/Troubleshooting) page

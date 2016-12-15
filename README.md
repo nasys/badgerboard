@@ -49,7 +49,7 @@ Coming soon
 
 ### **Badgerboard setup**
 #### Test out your Badgerboard
-```
+```diff
 - DO NOT POWER ON WITHOUT ANTENNA! 
 
 ```

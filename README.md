@@ -50,9 +50,10 @@ Coming soon
 ### **Badgerboard setup**
 #### Test out your Badgerboard
 
-* connect Badgerboard to your PC 
+* connect Badgerboard to your PC/Mac 
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**
+* Make sure you have chosen correct board  **Tools -> Board -> LilyPad Arduino USB** and correct port ** Tools -> Port** 
 * Change the time(number in milliseconds) inside the brackets after "**delay**" to change the speed of blinking
 * To upload click on the right pointing arrow on the top-left corner of your Arduino window
 
@@ -61,7 +62,7 @@ In case all of this works then you have successfully uploaded your first program
 
 #### LoRa sensor setup
 
-* Open **File -> Examples -> Badger -> LoRa_temp_hum**
+* Open **File -> Examples -> Badgerboard -> LoRa_temp_hum**
 * Replace examples **devEUI**(16 hex char), **appEUI**(16 hex char) and **appKey**(32 hex char) with the ones that Your LoRaWAN™ solution provider has assigned.  
 * Upload Your code to Badgerboard
 

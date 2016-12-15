@@ -50,9 +50,11 @@ Coming soon
 ### **Badgerboard setup**
 #### Test out your Badgerboard
 ## DO NOT POWER ON WITHOUT ANTENNA!
-'''diff
-+ Make sure your Badgerboard is switched ON (switch towards USB Port)
-'''
+
+```diff
++ this will be highlighted in green
+- this will be highlighted in red
+```
 * connect Badgerboard to your PC/Mac 
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**

@@ -74,7 +74,7 @@ In case all of this works then you have successfully uploaded your first program
 ##### example 1
 
 	
-	In Arduino code your **devEUI**, **appEUI** and **appKey** are represented by char array and should look similar to 
+	In Arduino code your devEUI, appEUI and appKey are represented by char array and should look similar to 
 	this example
 	
 	const uint8_t devEUI[8] = {

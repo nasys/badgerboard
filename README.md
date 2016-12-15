@@ -49,9 +49,10 @@ Coming soon
 
 ### **Badgerboard setup**
 #### Test out your Badgerboard
-**
+```
+- DO NOT POWER ON WITHOUT ANTENNA! 
 
-- DO NOT POWER ON WITHOUT ANTENNA! -
+```
 
 
 * connect Badgerboard to your PC/Mac 

@@ -54,6 +54,7 @@ Coming soon
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**
 * Make sure you have chosen correct board  **Tools -> Board -> LilyPad Arduino USB** and 
+  
   correct port ** Tools -> Port ** 
 * Change the time(number in milliseconds) inside the brackets after "**delay**" to change the speed of blinking
 * To upload click on the right pointing arrow on the top-left corner of your Arduino window

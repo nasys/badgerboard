@@ -17,6 +17,7 @@
  * [Badgerboard Setup](#badgerboard-setup)
 	* [Test out your Badgerboard](#test-out-your-badgerboard) 
  	* [LoRa sensor setup](#lora-sensor-setup)
+ * [Debugging](#debugging)
  * [Known issues](#known-issues)
  * [Version log](#version-log)
  * [Used libraries](#used-libraries)

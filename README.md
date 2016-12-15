@@ -49,11 +49,12 @@ Coming soon
 
 ### **Badgerboard setup**
 #### Test out your Badgerboard
-## DO NOT POWER ON WITHOUT ANTENNA!
-
+**
 ```diff
-- ## DO NOT POWER ON WITHOUT ANTENNA! -
+- DO NOT POWER ON WITHOUT ANTENNA! -
 ```
+**
+
 * connect Badgerboard to your PC/Mac 
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**

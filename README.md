@@ -49,7 +49,7 @@ Coming soon
 
 ### **Badgerboard setup**
 #### Test out your Badgerboard
-<p style='color:red'>This is some red text.</p>
+## DO NOT POWER ON WITHOUT ANTENNA!
 Make sure your Badgerboard is switched ON (switch towards USB Port)
 
 * connect Badgerboard to your PC/Mac 

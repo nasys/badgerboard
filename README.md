@@ -50,6 +50,8 @@ Coming soon
 ### **Badgerboard setup**
 #### Test out your Badgerboard
 
+Make sure your Badgerboard is switched ON (switch towards USB Port)
+
 * connect Badgerboard to your PC/Mac 
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**

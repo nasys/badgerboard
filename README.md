@@ -11,9 +11,9 @@
 ### **Table of Contents**
  * [Prerequisites](#prerequisites)
  	* [Downloads](#downloads)
+	* [General installation](#general-installation)
  	* [Mac OS X installation with Git](#mac-os-x-installation-with-git)
  	* [Windows installation with Git](#windows-installation-with-git)
- 	* [manual installation](#manual-installation)
  * [Badgerboard Setup](#badgerboard-setup)
 	* [Test out your Badgerboard](#test-out-your-badgerboard) 
  	* [LoRa sensor setup](#lora-sensor-setup)
@@ -31,6 +31,14 @@
 * [**Arduino**](https://www.arduino.cc/en/Main/Software)
 * [**Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
+#### General installation
+* [Download](https://github.com/nasys/badgerboard/archive/master.zip) this library as **.zip** file
+
+now this file is in downloads folder named Badgerboard-master.zip
+
+* Open Arduino and include it under **Sketch -> Include library -> add .zip library**
+* Open **Files -> Examples -> badger -> LoRa_temp_hum**
+
 ##### Mac OS X installation with Git
 
 * Open "**Finder**" (Press &#8984;+ Space ) 
@@ -42,14 +50,6 @@
 ##### Windows installation with Git
 
 Coming soon
-
-#### manual installation
-* [Download](https://github.com/nasys/badgerboard/archive/master.zip) this library as **.zip** file
-
-now this file is in downloads folder named Badgerboard-master.zip
-
-* Open Arduino and include it under **Sketch -> Include library -> add .zip library**
-* Open **Files -> Examples -> badger -> LoRa_temp_hum**
 
 ### **Badgerboard setup**
 #### Test out your Badgerboard

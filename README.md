@@ -58,7 +58,7 @@ Coming soon
 
 ```
 
-* Make sure Badgerboard power switch is turned ON (button towards USB port)
+* Make sure Badgerboard power switch is turned ON ([button towards USB port](https://www.maker.io/-/media/makerio/makerimages/blogs/badgerboard/badgerboard-figure-1.jpg?la=en&hash=B2158C77D4DA2ACD35EAA878DF2E584F373AB571))
 * connect Badgerboard to your PC/Mac 
 * Open Arduino
 * Open Blink example **Files -> Examples -> Basic -> Blink**

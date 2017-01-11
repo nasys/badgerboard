@@ -92,6 +92,8 @@ void badger_temp_sensor_init();
 /** @brief Send only temperature and humidity from onboard sensor
 	expects temp sensor to be inited. badger_temp_sensor_init() */
 bool badger_temp_sensor_send();
+bool badger_temp_send();
+bool LoRa_add_sensitivity(uint8_t sensitivity);
 
 /** @brief Send status message (8bits of data) with temperature, humidity, battery voltage and successful
 	unsuccessful packet count in JSON format. */

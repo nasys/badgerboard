@@ -252,17 +252,20 @@ bool Lora_requires_reset()
 
 bool LoRa_add_sensitivity(uint8_t sensitivity)
 {
-//	LoRaBee.wakeUp();
-	if(sensitivity > 4)
-		sensitivity = 4;
-	sensitivity = 4 - sensitivity;
+	LoRaBee.wakeUp();
+	LoRaBee.wakeUp();
+	sensitivity = sensitivity - 1;					//so you could use if(serial_input > 0) 1 = 0...
+	if(sensitivity > 6)
+		sensitivity = 6;
+	sensitivity = 5 - sensitivity;
 	Serial.print("Lora: Adding sensitivity: SF ");
 	Serial.println(12 - sensitivity);
 	bool ok = LoRaBee.setSpreadingFactor(12 - sensitivity);
 	ok = LoRaBee.setTXPower(15) && ok;
-	ok = LoRaBee.setDataRate(1 + sensitivity) && ok;
+	ok = LoRaBee.setDataRate(sensitivity) && ok;
 	return ok;
-}
+	}
+
 
 void LoRa_init_sleep()
 {
@@ -557,6 +560,21 @@ bool badger_temp_sensor_send()
 #endif
 	return LoRa_send(19, (uint8_t*) json_data, strlen(json_data));
 }
+
+bool badger_temp_send()
+{
+	if(s_fabo_init_successful == false)
+		return false;
+	
+	float temp1 = faboHumidity.getTemperature();
+	
+#ifdef	SERIAL_DEBUG
+	Serial.println(temp1);
+#endif
+	return LoRa_send(1, (uint8_t*) &temp1, sizeof(temp1));
+}
+
+
 
 bool badger_temp_sensor_send_status(uint8_t status)
 {

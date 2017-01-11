@@ -616,6 +616,7 @@ bool Sodaq_RN2483::setSpreadingFactor(uint8_t sf)
 	if(sf > 12)
 		sf = 12;
 	this->loraStream->print(STR_CMD_RADIO_SET);
+	
 	this->loraStream->print(STR_RADIO_SF);
 	this->loraStream->print(sf);
 	this->loraStream->print(CRLF);
@@ -640,6 +641,7 @@ bool Sodaq_RN2483::setTXPower(int8_t power)
 	this->loraStream->print(STR_CMD_RADIO_SET);
 	this->loraStream->print(STR_RADIO_PWR);
 	this->loraStream->print(power);
+	
 	this->loraStream->print(CRLF);
 
     bool ok = expectOK();

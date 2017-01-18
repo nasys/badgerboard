@@ -37,7 +37,7 @@
 now this file is in downloads folder named Badgerboard-master.zip
 
 * Open Arduino and include it under **Sketch -> Include library -> add .zip library**
-* Open **Files -> Examples -> badger -> LoRa_temp_hum**
+
 
 ##### Mac OS X installation with Git
 
@@ -61,7 +61,7 @@ Coming soon
 * Make sure Badgerboard power switch is turned ON ([button towards USB port](https://www.maker.io/-/media/makerio/makerimages/blogs/badgerboard/badgerboard-figure-1.jpg?la=en&hash=B2158C77D4DA2ACD35EAA878DF2E584F373AB571))
 * connect Badgerboard to your PC/Mac 
 * Open Arduino
-* Open Blink example **Files -> Examples -> Basic -> Blink**
+* Open Blink example **Files -> Examples -> 01.Basics -> Blink**
 * Make sure you have chosen correct board  **Tools -> Board -> LilyPad Arduino USB** and correct port **Tools -> Port** 
 * Change the time(number in milliseconds) inside the brackets after "**delay**" to change the speed of blinking
 * To **upload** click on the __right pointing arrow__ on the top-left corner of your Arduino window

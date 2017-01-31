@@ -360,6 +360,30 @@ bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t
 	return success;
 }
 
+bool LoRa_initABP(const uint8_t devAddr[4], const uint8_t appSKey[16], const uint8_t nwkSKey[16], bool adr)			//this shit
+{
+	LoRaBee.setDiag(Serial);
+
+	if(LoRaBee.initABP(loraSerial, devAddr, appSKey, nwkSKey, false) == false)
+	{
+		badger_restart();
+		sleep_wdt_approx(4000);
+		return false;
+	}
+	LoRaBee.sleep();
+	bool boot_msg_success = LoRa_send(99, bootMSG, 5, 4);
+	int u = 0;
+	while(!boot_msg_success && u++ < 4)
+	{
+		while(!Lora_tx_ready())
+		{
+			sleep_wdt_approx(4 * 1000UL);
+		}
+		boot_msg_success = LoRa_resend_try();
+	}
+	return boot_msg_success;
+}
+
 struct resend_data
 {
 	uint8_t fPort = 0;

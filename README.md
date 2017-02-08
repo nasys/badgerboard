@@ -111,6 +111,10 @@ To see Debugging messages open Serial Monitor **Tools -> Serial Monitor**
 
 ### Version log
 
+#### Version 0.0.3
+	* Added a quickfix related to SF not changeing
+	* Added _mod to library names to avoid issues if libraries are already installed
+	
 #### Version 0.0.2
 :calendar:06.12.2016
 

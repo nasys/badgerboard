@@ -42,7 +42,7 @@ enum wdt_period : uint8_t
 };
 
 extern volatile bool sodaq_wdt_flag;
-
+void badger_temp_hum_get(float* temp, float* hum);
 //void sodaq_wdt_enable(wdt_period period = WDT_PERIOD_1X);
 
 //void sodaq_wdt_disable();
@@ -71,6 +71,8 @@ void LoRa_init_sleep();
 /** @brief Sets up the lora module to send with correct address and appkey etc. LoRa_sleep() doesn't spoil it. */
 bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16]);
 
+bool LoRa_initABP(const uint8_t devAddr[4], const uint8_t appSKey[16], const uint8_t nwkSKey[16], bool adr);  //abpinit
+
 /** @brief Sends data over LoRa network into fPort port as a broadcast message. */
 bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len);
 
@@ -92,6 +94,8 @@ void badger_temp_sensor_init();
 /** @brief Send only temperature and humidity from onboard sensor
 	expects temp sensor to be inited. badger_temp_sensor_init() */
 bool badger_temp_sensor_send();
+bool badger_temp_send();
+bool LoRa_add_sensitivity(uint8_t sensitivity);
 
 /** @brief Send status message (8bits of data) with temperature, humidity, battery voltage and successful
 	unsuccessful packet count in JSON format. */

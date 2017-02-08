@@ -1,14 +1,14 @@
 #include <Arduino.h>
 //#include <EEPROM.h>
 
-#include "LowPower.h"
-#include "SoftReset.h"
+#include "LowPower_mod.h"
+#include "SoftReset_mod.h"
 
-#include "FaBoHumidity_HTS221.h"
+#include "FaBoHumidity_HTS221_mod.h"
 
 
 #include "badger.h"
-#include "Sodaq_RN2483.h"
+#include "Sodaq_RN2483_mod.h"
 
 volatile bool sodaq_wdt_flag = false;
 
@@ -33,14 +33,6 @@ void sodaq_wdt_enable(wdt_period period)
 						  );
 }
 
-/*
-void sodaq_wdt_disable()
-{
-	
-	// Using avr/wdt.h
-	wdt_disable();
-	
-}*/
 
 // Resets the WDT counter
 void sodaq_wdt_reset()
@@ -137,50 +129,6 @@ void sleep_wdt_approx(uint32_t sleep_time_ms)
 	sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);
 	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
 }
-/*
-void sleep_on_WDT(uint32_t sleep_time_ms)
-{
-	delay(sleep_time_ms);
-	return;
-	// guarantees no sleep after boot for usb to wake
-	if(badger_usb_powered()) // || millis() < 6000)
-	{
-		delay(sleep_time_ms);
-		return;
-	}
-	if(sleep_time_ms < 15)
-	{
-		delay(sleep_time_ms);
-		//		Serial.println("sleep < 15");
-		return;	
-	}
-	//	sleep_time_ms *= s_wdt_calib;
-	if(sleep_time_ms < 28)
-	{
-		sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
-		delay(sleep_time_ms);
-		return;
-	}
-	sleep_wdt(SLEEP_8S, 8000, &sleep_time_ms);
-	sleep_wdt(SLEEP_4S, 4000, &sleep_time_ms);
-	sleep_wdt(SLEEP_2S, 2000, &sleep_time_ms);
-	sleep_wdt(SLEEP_1S, 1000, &sleep_time_ms);
-	sleep_wdt(SLEEP_500MS, 500, &sleep_time_ms);
-	sleep_wdt(SLEEP_250MS, 250, &sleep_time_ms);  
-	sleep_wdt(SLEEP_120MS, 120, &sleep_time_ms);
-	sleep_wdt(SLEEP_60MS, 60, &sleep_time_ms);
-	sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);
-	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
-}*/
-/*
-void calib_wdt_timer()
-{
-	uint32_t before = millis();
-	LowPower.idle(SLEEP_250MS, ADC_ON, TIMER4_ON, TIMER3_ON, TIMER1_ON, TIMER0_ON, SPI_ON, USART1_ON, TWI_ON, USB_ON);
-	s_wdt_calib = 250 / (float) (millis() - before);
-	Serial.println(millis()); Serial.println(before);
-	Serial.print("WDT calib "); Serial.println(s_wdt_calib);
-}*/
 
 
 /*
@@ -252,17 +200,20 @@ bool Lora_requires_reset()
 
 bool LoRa_add_sensitivity(uint8_t sensitivity)
 {
-//	LoRaBee.wakeUp();
-	if(sensitivity > 4)
-		sensitivity = 4;
-	sensitivity = 4 - sensitivity;
+	LoRaBee.wakeUp();
+	LoRaBee.wakeUp();
+	sensitivity = sensitivity - 1;					
+	if(sensitivity > 6)
+		sensitivity = 6;
+	sensitivity = 5 - sensitivity;
 	Serial.print("Lora: Adding sensitivity: SF ");
 	Serial.println(12 - sensitivity);
 	bool ok = LoRaBee.setSpreadingFactor(12 - sensitivity);
 	ok = LoRaBee.setTXPower(15) && ok;
-	ok = LoRaBee.setDataRate(1 + sensitivity) && ok;
+	ok = LoRaBee.setDataRate(sensitivity) && ok;
 	return ok;
-}
+	}
+
 
 void LoRa_init_sleep()
 {
@@ -314,7 +265,9 @@ bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t
 				while(!Lora_tx_ready())
 				{
 					sleep_wdt_approx(4 * 1000UL);
+					
 				}
+				
 				boot_msg_success = LoRa_resend_try();
 			}
 			success = boot_msg_success;
@@ -355,6 +308,30 @@ bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t
 	sleep_wdt_approx(60);
 	badger_pulse_led(10);
 	return success;
+}
+
+bool LoRa_initABP(const uint8_t devAddr[4], const uint8_t appSKey[16], const uint8_t nwkSKey[16], bool adr)			
+{
+	LoRaBee.setDiag(Serial);
+	
+	if(LoRaBee.initABP(loraSerial, devAddr, appSKey, nwkSKey, false) == false)
+	{
+		badger_restart();
+		sleep_wdt_approx(4000);
+		return false;
+	}
+	LoRaBee.sleep();
+	bool boot_msg_success = LoRa_send(99, bootMSG, 5, 4);
+	int u = 0;
+	while(!boot_msg_success && u++ < 4)
+	{
+		while(!Lora_tx_ready())
+		{
+			sleep_wdt_approx(4 * 1000UL);
+		}
+		boot_msg_success = LoRa_resend_try();
+	}
+	return boot_msg_success;
 }
 
 struct resend_data
@@ -495,7 +472,7 @@ bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_coun
 	send_count--;
 	if(success == false && send_count > 0)
 	{
-		LoRa_resend_store(fPort, data, len, send_count);
+		//LoRa_resend_store(fPort, data, len, send_count);
 	}
 	s_tx_last_time = badger_millis();
 	return success;
@@ -503,7 +480,7 @@ bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_coun
 
 bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len)
 {
-	return LoRa_send(fPort, data, len, 1); //NO_ACK);
+	return LoRa_send(fPort, data, len, 1); //NO_ACK)
 }
 
 uint16_t LoRa_receive(uint8_t* buffer, uint16_t size, uint16_t payloadStartPosition)
@@ -534,7 +511,17 @@ void badger_temp_sensor_init()
 		badger_pulse_led(2);
 	}  
 }
-
+void badger_temp_hum_get(float* temp, float* hum)
+{
+	*temp = faboHumidity.getTemperature()-5;
+	*hum = faboHumidity.getHumidity()+4;
+	Serial.print("fabo temp");
+	Serial.println(*temp);
+	Serial.print("fabo hum");
+	Serial.println(*hum);
+	return;
+}
+	
 bool badger_temp_sensor_send()
 {
 	if(s_fabo_init_successful == false)
@@ -557,6 +544,21 @@ bool badger_temp_sensor_send()
 #endif
 	return LoRa_send(19, (uint8_t*) json_data, strlen(json_data));
 }
+
+bool badger_temp_send()
+{
+	if(s_fabo_init_successful == false)
+		return false;
+	
+	float temp1 = faboHumidity.getTemperature();
+	
+#ifdef	SERIAL_DEBUG
+	Serial.println(temp1);
+#endif
+	return LoRa_send(1, (uint8_t*) &temp1, sizeof(temp1));
+}
+
+
 
 bool badger_temp_sensor_send_status(uint8_t status)
 {
@@ -583,7 +585,7 @@ bool badger_temp_sensor_send_status(uint8_t status)
 	voltage -= volt_decimal1;
 	voltage *= 10;
 	int volt_decimal2 = (int)voltage;
-	
+	Serial.println(json_data);
 	snprintf(json_data, LORA_TX_BUF_LEN_MAX, "{\"S\":%d,\"T\":%d.%d,\"H\":%d.%d,\"V\":%d.%d,\"P\":%d/%d}", status, temp_decimal1, temp_decimal2, hum_decimal1, hum_decimal2, volt_decimal1, volt_decimal2, (uint16_t)s_tx_successful_count + 1, (uint16_t)s_tx_failed_count);
 #ifdef	SERIAL_DEBUG
 	Serial.println(json_data);
@@ -668,71 +670,6 @@ void badger_reset_lora()
 }
 
 
-/*
-uint64_t EEP_read_u64(uint16_t addr)
-{
-	union
-	{
-		byte b[8];
-		uint64_t d;
-	} data;
-	for(int i = 0; i < 8; i++)
-	{
-		data.b[i] = EEPROM.read(addr+i);
-	}
-	return data.d;
-}
-
-void EEP_write_u64(uint16_t addr, uint64_t x)
-{
-	union
-	{
-		byte b[8];
-		uint64_t d;
-	} data;
-	data.d = x;
-	for(int i = 0; i < 8; i++)
-	{
-		EEPROM.write(addr+i, data.b[i]);
-	}
-}
-
-static uint64_t s_last_stored_value = 0;
-
-uint64_t EEP_load_u64_counter()
-{
-	if(EEPROM.read(EEP_COUNTER_CHECK_ADDR) == EEP_COUNTER_CHECK_VALUE)
-	{
-		uint64_t value = EEP_read_u64(EEP_COUNTER_DATA_ADDR);
-		s_last_stored_value = value;
-#ifdef	SERIAL_DEBUG
-		Serial.print("Restored from EEP ");Serial.println((uint32_t)value);
-#endif
-		return value;
-	}
-	else
-	{
-		EEP_write_u64(EEP_COUNTER_DATA_ADDR, 0);
-		EEPROM.write(EEP_COUNTER_CHECK_ADDR, EEP_COUNTER_CHECK_VALUE);
-#ifdef	SERIAL_DEBUG
-		Serial.println("First init. Stored to EEP 0");
-#endif
-		return 0;
-	}
-}
-
-void EEP_store_u64_counter(uint64_t x, uint16_t threshold_count)
-{
-	if(x - s_last_stored_value > threshold_count)
-	{
-		EEP_write_u64(EEP_COUNTER_DATA_ADDR, x);
-		s_last_stored_value = x;
-#ifdef	SERIAL_DEBUG
-		Serial.print("EEP renewed ");Serial.println((uint32_t)x);
-#endif
-	}
-}
-*/
 
 
 long badger_read_vcc_mv() 

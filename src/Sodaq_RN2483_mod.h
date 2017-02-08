@@ -25,7 +25,7 @@
 
 #include <stdint.h>
 #include <Stream.h>
-#include "Switchable_Device.h"
+#include "Switchable_Device_mod.h"
 
 /**
 
@@ -51,8 +51,8 @@
 #define ENABLE_SLEEP
 
 //#define DEFAULT_BAUDRATE 57600
-#define DEFAULT_BAUDRATE 19200
-//#define DEFAULT_BAUDRATE 9600
+//#define DEFAULT_BAUDRATE 19200
+#define DEFAULT_BAUDRATE 9600
 #define DEFAULT_INPUT_BUFFER_SIZE 64
 #define DEFAULT_RECEIVED_PAYLOAD_BUFFER_SIZE 32
 #define DEFAULT_TIMEOUT (120 * 3)

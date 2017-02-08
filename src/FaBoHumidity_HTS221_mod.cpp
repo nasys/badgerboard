@@ -11,7 +11,7 @@
  @author FaBo<info@fabo.io>
 */
 
-#include "FaBoHumidity_HTS221.h"
+#include "FaBoHumidity_HTS221_mod.h"
 
 /**
  @brief コンストラクタ

@@ -18,7 +18,7 @@
 * <http://www.gnu.org/licenses/>.
 */
 
-#include "Switchable_Device.h"
+#include "Switchable_Device_mod.h"
 
 SwitchableDevice::SwitchableDevice()
 {

@@ -18,9 +18,9 @@
 * <http://www.gnu.org/licenses/>.
 */
 
-#include "Sodaq_RN2483.h"
-#include "StringLiterals.h"
-#include "Utils.h"
+#include "Sodaq_RN2483_mod.h"
+#include "StringLiterals_mod.h"
+#include "Utils_mod.h"
 #include "badger.h"
 
 #define ENABLE_SLEEP

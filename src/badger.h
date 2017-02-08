@@ -42,7 +42,7 @@ enum wdt_period : uint8_t
 };
 
 extern volatile bool sodaq_wdt_flag;
-
+void badger_temp_hum_get(float* temp, float* hum);
 //void sodaq_wdt_enable(wdt_period period = WDT_PERIOD_1X);
 
 //void sodaq_wdt_disable();

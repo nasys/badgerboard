@@ -513,8 +513,8 @@ void badger_temp_sensor_init()
 }
 void badger_temp_hum_get(float* temp, float* hum)
 {
-	*temp = faboHumidity.getTemperature()-5;
-	*hum = faboHumidity.getHumidity()+4;
+	*temp = faboHumidity.getTemperature();
+	*hum = faboHumidity.getHumidity();
 	Serial.print("fabo temp");
 	Serial.println(*temp);
 	Serial.print("fabo hum");

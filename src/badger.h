@@ -94,6 +94,7 @@ void badger_temp_sensor_init();
 /** @brief Send only temperature and humidity from onboard sensor
 	expects temp sensor to be inited. badger_temp_sensor_init() */
 bool badger_temp_sensor_send();
+bool badger_hum_send();
 bool badger_temp_send();
 bool LoRa_add_sensitivity(uint8_t sensitivity);
 
@@ -151,7 +152,7 @@ class badger_scheduler
 		bool printing_enable;
 		bool tx_ignore;
 };
-
+bool sendCayanneTempHum();
 /** @brief Inits LoRa module to sleep, temperature sensor, serial port and finally blinks user led. */
 void badger_init();
 

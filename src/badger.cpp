@@ -9,6 +9,7 @@
 
 #include "badger.h"
 #include "Sodaq_RN2483_mod.h"
+#include "cayanneLPP.h"
 
 volatile bool sodaq_wdt_flag = false;
 
@@ -558,6 +559,20 @@ bool badger_temp_send()
 	return LoRa_send(1, (uint8_t*) &temp1, sizeof(temp1));
 }
 
+bool badger_hum_send()
+{
+	if(s_fabo_init_successful == false)
+		return false;
+	
+	uint8_t humidity = int(faboHumidity.getHumidity());
+	
+#ifdef	SERIAL_DEBUG
+	Serial.println(humidity);
+#endif
+	return LoRa_send(4, (uint8_t*) &humidity, sizeof(humidity));
+}
+
+
 
 
 bool badger_temp_sensor_send_status(uint8_t status)
@@ -832,10 +847,29 @@ void badger_init()
     pinMode(LED_PIN, INPUT);
     badger_serial_check_connection();
     badger_pulse_led(2000);
-    badger_temp_sensor_init();	
+	badger_temp_sensor_init();
 }
 
 badger_scheduler rare_sched(2000UL, 1, OTHER_SCHED);
+
+
+
+bool sendCayanneTempHum()			
+{
+	
+	if(s_fabo_init_successful == false)
+	{
+		return false;
+	}
+	float temperature = faboHumidity.getTemperature();
+	float relativeHumidity = faboHumidity.getHumidity();
+
+	CayenneLPP cayennePacket(10);
+	cayennePacket.addTemperature(1 , temperature);
+	cayennePacket.addRelativeHumidity(1, relativeHumidity);
+	
+	LoRa_send(69,cayennePacket.getBuffer(),cayennePacket.getSize());
+}
 
 bool badger_sleep_now(uint32_t period_ms)
 {

@@ -355,19 +355,24 @@ bool Sodaq_RN2483::resetDevice()
     return false;
 }
 
-// Enables all the channels that belong to the given Frequency Sub-Band (FSB)
+// Enables all the channels that belong to the given qquency Sub-Band (FSB)
 // and disables the rest.
 // fsb is [1, 8] or 0 to enable all channels.
 // Returns true if all channels were set successfully.
 bool Sodaq_RN2483::setFsbChannels(uint8_t fsb)
 {
 	this->wakeUpIfSleeping();
-    //debugPrintLn("[setFsbChannels]");
-
-    uint8_t first125kHzChannel = fsb > 0 ? (fsb - 1) * 8 : 0;
+    Serial.println("[setFsbChannels]");
+	uint8_t first125kHzChannel = fsb > 0 ? (fsb - 1) * 8 : 0;
     uint8_t last125kHzChannel = fsb > 0 ? first125kHzChannel + 7 : 71;
     uint8_t fsb500kHzChannel = fsb + 63;
     
+    Serial.print("first125kHzChannel");
+	Serial.println(first125kHzChannel);
+	Serial.print("last125kHzChannel");
+	Serial.println(last125kHzChannel);
+	Serial.print("fsb500kHzChannel");
+	Serial.println(fsb500kHzChannel);
     bool allOk = true;
     for (uint8_t i = 0; i < 72; i++) {
         this->loraStream->print(STR_CMD_SET_CHANNEL_STATUS);

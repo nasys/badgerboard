@@ -47,28 +47,13 @@ void sodaq_wdt_reset()
 	WDTCSR |= _BV(WDIE);	
 }
 
+//
 void sodaq_wdt_safe_delay(uint32_t ms)
 {
-	// Delay step size
-	/*  uint32_t delay_step = 10;
-	 
-  // Loop through and reset between steps
-  while (ms > delay_step) {
-	 sodaq_wdt_reset();
-	 delay(delay_step);
-	 ms -= delay_step;
-  }
-	 
-  // Delay for the remainder
-  sodaq_wdt_reset();
-  delay(ms);*/
 	sleep_wdt_approx(ms);
 }
 
 static uint64_t millis_offset = 0;
-//static float s_wdt_calib = 1.0;
-
-
 
 uint32_t badger_millis()
 {
@@ -79,7 +64,6 @@ uint32_t badger_millis()
 void sleep_wdt(period_t period, uint16_t period_ms, uint32_t* remainder)
 {
 	uint16_t divider = *remainder / period_ms;
-	//  Serial.print(period_ms); Serial.print(" : "); Serial.print(divider); Serial.print(" : "); Serial.print(*remainder);
 	for(uint16_t i = 0; i < divider; i++)
 	{
 		if(badger_usb_powered())
@@ -91,30 +75,22 @@ void sleep_wdt(period_t period, uint16_t period_ms, uint32_t* remainder)
 			LowPower.powerDown(period, ADC_OFF, BOD_ON);
 			millis_offset += period_ms;
 		}
+		*remainder = *remainder - period_ms;
 	}
-	//  Serial.print(" : "); Serial.println((uint32_t) millis_offset);
-	*remainder = *remainder - (divider * period_ms);
 }
 
 void sleep_wdt_approx(uint32_t sleep_time_ms)
 {
-//	delay(sleep_time_ms);
-//	return;
 	// guarantees no sleep after boot for usb to wake
 	if(badger_usb_powered()) // || millis() < 6000)
 	{
 		delay(sleep_time_ms);
 		return;
 	}
-	if(sleep_time_ms < 15)
+	// since WDT oscillator accuracy is extremely low, compensating for sleep leftovers (<15ms) makes no sense. 
+	if(sleep_time_ms < 60)
 	{
-		delay(sleep_time_ms);
-		//		Serial.println("sleep < 15");
-		return;	
-	}
-	//	sleep_time_ms *= s_wdt_calib;
-	if(sleep_time_ms < 28)
-	{
+		sleep_wdt(SLEEP_30MS, 30, &sleep_time_ms);	
 		sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
 		delay(sleep_time_ms);
 		return;
@@ -131,13 +107,6 @@ void sleep_wdt_approx(uint32_t sleep_time_ms)
 	sleep_wdt(SLEEP_15MS, 15, &sleep_time_ms);
 }
 
-
-/*
- // AVR WDT ISR
- ISR(WDT_vect)
- {
- sodaq_wdt_flag = true;
- }*/
 
 // Boot message
 const uint8_t bootMSG[] =
@@ -878,10 +847,6 @@ bool badger_sleep_now(uint32_t period_ms)
 	if(rare)
 	{
 		success = LoRa_resend_try();
-	}
-	if(badger_usb_powered() && period_ms > 4 * 1000UL)
-	{
-		period_ms = 4 * 1000UL;
 	}
 	sleep_wdt_approx(period_ms);
     if(rare)

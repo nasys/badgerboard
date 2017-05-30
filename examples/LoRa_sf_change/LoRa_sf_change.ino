@@ -1,10 +1,8 @@
 #include <badger.h>
 
-
+bool LoRa_add_sensitivity(uint8_t sensitivity);
 
 badger_scheduler temp_sched(1 * 60 * 1000UL, 30 * 1000UL, PRINT_ENABLE);
-
-
 
 // enter your own key
 
@@ -15,6 +13,7 @@ const uint8_t devEUI[8] = {
 const uint8_t appKey[16] = {
 
 };
+
 
 const uint8_t appEUI[8] = {
 

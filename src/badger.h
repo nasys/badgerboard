@@ -63,8 +63,6 @@ bool Lora_tx_ready();
 
 bool Lora_requires_reset();
 
-bool LoRa_enable_long_range();
-
 /** @brief LoRa module wakes up not sleeping deep but consuming hefty 2,8mA. If you don't do the LoRa_init() anytime soon, then put LoRa module to sleep to conserve power. */
 void LoRa_init_sleep();
 
@@ -81,22 +79,20 @@ bool LoRa_send(uint8_t fPort, const uint8_t* data, uint8_t len, int8_t send_coun
 
 uint16_t LoRa_receive(uint8_t* buffer, uint16_t size, uint16_t payloadStartPosition = 0);
 
-void Lora_down_check(bool success);
-
 bool LoRa_resend_try();
 
 /** @brief Puts LoRa module into deep sleep mode (saves 2,8mA). */
-void LoRa_sleep();
+//void LoRa_sleep();
 
 /** @brief Initalizes the onboard temperature sensor. */
-void badger_temp_sensor_init();
+//void badger_temp_sensor_init();
 
 /** @brief Send only temperature and humidity from onboard sensor
 	expects temp sensor to be inited. badger_temp_sensor_init() */
 bool badger_temp_sensor_send();
 bool badger_hum_send();
 bool badger_temp_send();
-bool LoRa_add_sensitivity(uint8_t sensitivity);
+
 
 /** @brief Send status message (8bits of data) with temperature, humidity, battery voltage and successful
 	unsuccessful packet count in JSON format. */
@@ -107,16 +103,14 @@ void badger_pulse_led(uint16_t period_ms);
 
 bool badger_blink_error(bool success);
 
-void badger_print_EUI(const uint8_t dev_EUI[8]);
-
-void badger_reset_lora();
+void badger_print_EUI(const uint8_t dev_EUI[8]); 
 
 //uint64_t EEP_load_u64_counter();
 
 //void EEP_store_u64_counter(uint64_t x, uint16_t threshold_count);
 
 /** @brief Returns the board voltage. If the supply is higher than 3,3V LDO, then still returns 3,3V. 
-	Gives usable information when battery is almost empty and voltage drops fast. */
+	Gives usable information only when battery is almost empty and voltage drops fast. */
 long badger_read_vcc_mv();
 
 void badger_serial_check_connection();

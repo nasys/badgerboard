@@ -11,7 +11,7 @@
 #include "Sodaq_RN2483_mod.h"
 #include "cayanneLPP.h"
 
-volatile bool sodaq_wdt_flag = false;
+//volatile bool sodaq_wdt_flag = false;
 
 void sodaq_wdt_enable(wdt_period period)
 {
@@ -132,19 +132,6 @@ bool Lora_tx_ready()
 	return badger_millis() - s_tx_last_time < s_tx_interval_min ? false : true;
 }
 
-void Lora_transmit_counter(bool success)
-{
-	if(success)
-	{
-		s_tx_successful_count++;
-	}
-	else
-	{
-		s_tx_failed_count++;
-	}
-	Lora_down_check(success);
-}
-
 void Lora_down_check(bool success)
 {
 	static uint16_t s_failed_packets = 0;
@@ -163,9 +150,30 @@ void Lora_down_check(bool success)
 	}
 }
 
+void Lora_transmit_counter(bool success)
+{
+	if(success)
+	{
+		s_tx_successful_count++;
+	}
+	else
+	{
+		s_tx_failed_count++;
+	}
+	Lora_down_check(success);
+}
+
 bool Lora_requires_reset()
 {
 	return s_LoRa_down;
+}
+
+void badger_reset_lora()
+{
+	pinMode(LORA_RESET_PIN, OUTPUT);
+	digitalWrite(LORA_RESET_PIN, LOW);
+	sleep_wdt_approx(15);
+	digitalWrite(LORA_RESET_PIN, HIGH);
 }
 
 bool LoRa_add_sensitivity(uint8_t sensitivity)
@@ -195,10 +203,10 @@ void LoRa_init_sleep()
 	LoRaBee.sleep();
 }
 
-void LoRa_sleep()
-{
-	LoRaBee.sleep();
-}
+//void LoRa_sleep()
+//{
+//	LoRaBee.sleep();
+//}
 
 bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16])
 {
@@ -640,20 +648,24 @@ bool badger_blink_error(bool success)
 void badger_print_EUI(const uint8_t dev_EUI[8])
 {
 	Serial.print("devEUI ");
+	Serial.print(dev_EUI[0], HEX);
+	Serial.print(" ");
+	Serial.print(dev_EUI[1], HEX);
+	Serial.print(" ");
+	Serial.print(dev_EUI[2], HEX);
+	Serial.print(" ");
+	Serial.print(dev_EUI[3], HEX);
+	Serial.print(" ");
+	Serial.print(dev_EUI[4], HEX);
+	Serial.print(" ");
+	Serial.print(dev_EUI[5], HEX);
+	Serial.print(" ");
 	Serial.print(dev_EUI[6], HEX);
 	Serial.print(" ");
 	Serial.println(dev_EUI[7], HEX);
+
+	
 }
-
-void badger_reset_lora()
-{
-	pinMode(LORA_RESET_PIN, OUTPUT);
-	digitalWrite(LORA_RESET_PIN, LOW);
-	sleep_wdt_approx(15);
-	digitalWrite(LORA_RESET_PIN, HIGH);
-}
-
-
 
 
 long badger_read_vcc_mv() 

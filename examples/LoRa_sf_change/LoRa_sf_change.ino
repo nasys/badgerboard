@@ -20,11 +20,13 @@ const uint8_t appEUI[8] = {
 };
 
 
+
 void setup() 
 {
     badger_init();
     badger_print_EUI(devEUI);
-    LoRa_init(devEUI, appEUI, appKey);
+    LoRa_init(devEUI, appEUI, appKey,true);
+ 
 }
 
 void loop()

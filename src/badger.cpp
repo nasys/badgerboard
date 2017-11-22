@@ -208,15 +208,16 @@ void LoRa_init_sleep()
 //	LoRaBee.sleep();
 //}
 
-bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16])
+bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16],bool adr)
+
 {
 	LoRaBee.setDiag(Serial);
 
-	if(LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, true) == false)
+    if(LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, adr) == false)
 	{
 		badger_reset_lora();
 		sleep_wdt_approx(1 * 1000UL);
-		if(LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, true) == false)
+		if(LoRaBee.initOTA(loraSerial, dev_EUI, app_EUI, app_Key, adr) == false)
 		{
 			badger_restart();
 			sleep_wdt_approx(4000);
@@ -292,7 +293,7 @@ bool LoRa_initABP(const uint8_t devAddr[4], const uint8_t appSKey[16], const uin
 {
 	LoRaBee.setDiag(Serial);
 	
-	if(LoRaBee.initABP(loraSerial, devAddr, appSKey, nwkSKey, false) == false)
+    if(LoRaBee.initABP(loraSerial, devAddr, appSKey, nwkSKey, adr) == false)
 	{
 		badger_restart();
 		sleep_wdt_approx(4000);

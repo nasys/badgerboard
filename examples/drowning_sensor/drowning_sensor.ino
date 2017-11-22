@@ -34,7 +34,7 @@ void setup()
     badger_init();
     Serial.println("drowning sensor");
     badger_print_EUI(devEUI);
-    LoRa_init(devEUI, appEUI, appKey);
+    LoRa_init(devEUI, appEUI, appKey,true);
 }
 
 bool water_level() //read analog value and decide if sensor is in water or not

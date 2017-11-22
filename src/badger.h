@@ -67,7 +67,7 @@ bool Lora_requires_reset();
 void LoRa_init_sleep();
 
 /** @brief Sets up the lora module to send with correct address and appkey etc. LoRa_sleep() doesn't spoil it. */
-bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16]);
+bool LoRa_init(const uint8_t dev_EUI[8], const uint8_t app_EUI[8], const uint8_t app_Key[16],bool adr);
 
 bool LoRa_initABP(const uint8_t devAddr[4], const uint8_t appSKey[16], const uint8_t nwkSKey[16], bool adr);  //abpinit
 

@@ -30,7 +30,7 @@ void setup()
     badger_init();
     Serial.println("badger temp/hum sensor");
     badger_print_EUI(devEUI);
-    LoRa_init(devEUI, appEUI, appKey);
+    LoRa_init(devEUI, appEUI, appKey,true);
     
 }
 
